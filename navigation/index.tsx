@@ -14,9 +14,9 @@ import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
-import NewActivity from '../screens/newActivity';
-import TabTwoScreen from '../screens/TabTwoScreen';
-import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
+import NewActivityScreen from '../screens/NewActivityScreen';
+import TabTwoScreen from '../screens/LastScreen';
+import { RootStackParamList, RootTabParamList } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import { List } from 'react-native-paper';
 
@@ -65,7 +65,7 @@ function BottomTabNavigator() {
       }}>
       <BottomTab.Screen
         name="TabOne"
-        component={NewActivity}
+        component={NewActivityScreen}
         options={() => ({
           title: 'New Activity',
           tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />,

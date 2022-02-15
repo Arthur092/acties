@@ -9,7 +9,12 @@ interface Props {
 }
 
 export const AddRecordDialog = ({ visible, showDialog }: Props) => {
-  const [text, setText] = React.useState("");
+  const [number, setNumber] = React.useState("");
+
+  const onChanged = (number: string)=>  {
+    const newNumber = number.replace(/[^0-9]/g, '')
+    setNumber(newNumber);
+}
 
   return (
     <Provider>
@@ -18,11 +23,12 @@ export const AddRecordDialog = ({ visible, showDialog }: Props) => {
         <Dialog visible={visible} onDismiss={() => showDialog(false)}>
             <Dialog.Content>
             <TextInput
-              label="Details"
-              value={text}
-              onChangeText={text => setText(text)}
-              placeholder='eg. 123'
-            />
+                label="Quantity"
+                value={number}
+                onChangeText={onChanged}
+                placeholder='eg. 500'
+                mode='outlined'
+              />
             </Dialog.Content>
             <Dialog.Actions>
               <Button onPress={() => showDialog(false)}>Done</Button>
