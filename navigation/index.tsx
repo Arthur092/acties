@@ -15,7 +15,7 @@ import useColorScheme from '../hooks/useColorScheme';
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import NewActivityScreen from '../screens/NewActivityScreen';
-import TabTwoScreen from '../screens/LastScreen';
+import LastScreen from '../screens/LastScreen';
 import { RootStackParamList, RootTabParamList } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import { List } from 'react-native-paper';
@@ -59,12 +59,12 @@ function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="TabOne"
+      initialRouteName="ActivityTab"
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme].tint,
       }}>
       <BottomTab.Screen
-        name="TabOne"
+        name="ActivityTab"
         component={NewActivityScreen}
         options={() => ({
           title: 'New Activity',
@@ -72,8 +72,8 @@ function BottomTabNavigator() {
         })}
       />
       <BottomTab.Screen
-        name="TabTwo"
-        component={TabTwoScreen}
+        name="LastTab"
+        component={LastScreen}
         options={{
           title: 'Historical',
           tabBarIcon: ({ color }) => <TabBarIcon name="chart-line" color={color} />,

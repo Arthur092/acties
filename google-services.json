@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "606075828354",
+    "firebase_url": "https://acties-f8e89-default-rtdb.firebaseio.com",
+    "project_id": "acties-f8e89",
+    "storage_bucket": "acties-f8e89.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:606075828354:android:b28310eb7aa27936f31c9b",
+        "android_client_info": {
+          "package_name": "acties.apk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "606075828354-pnap71udt77uj29kj9aj6jf4ql0blgjc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPSsYB1WGj1tscwZcgHw00zOKDuQZTfYU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "606075828354-pnap71udt77uj29kj9aj6jf4ql0blgjc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

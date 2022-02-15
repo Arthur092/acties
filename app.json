@@ -19,14 +19,21 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "supportsTablet": true,
+      "bundleIdentifier": "Acties"
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "acties.apk"
     },
+    "plugins": [
+      "@react-native-firebase/app"
+    ],
     "web": {
       "favicon": "./assets/images/favicon.png"
     }
