@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { TouchableOpacity, StyleSheet, View } from 'react-native'
 
-import { Text } from 'react-native-paper'
+import { Snackbar, Text } from 'react-native-paper'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../types'
 import { emailValidator } from '../../helpers/emailValidator'
@@ -12,14 +12,17 @@ import Header from '../../components/Authentication/Header'
 import TextInput from '../../components/Authentication/TextInput'
 import Button from '../../components/Authentication/Button'
 import { theme } from '../../core/theme'
+import { useAuth } from '../../hooks/useAuth'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'StartScreen'>;
 
 export default function LoginScreen({ navigation }: Props) {
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
+  const { signin } = useAuth();
+  const [isSnackBar, setIsSnackBar] = useState(false);
 
-  const onLoginPressed = () => {
+  const onLoginPressed = async () => {
     const emailError = emailValidator(email.value)
     const passwordError = passwordValidator(password.value)
     if (emailError || passwordError) {
@@ -27,10 +30,13 @@ export default function LoginScreen({ navigation }: Props) {
       setPassword({ ...password, error: passwordError })
       return
     }
-    // navigation.reset({
-    //   index: 0,
-    //   routes: [{ name: 'Dashboard' }],
-    // })
+
+    try {
+      await signin(email.value, password.value);
+    } catch (error) {
+      setIsSnackBar(true)
+      console.log("$$$ - error", error);
+    }
   }
 
   return (
@@ -72,6 +78,13 @@ export default function LoginScreen({ navigation }: Props) {
           <Text style={styles.link}>Sign up</Text>
         </TouchableOpacity>
       </View>
+      <Snackbar
+        visible={isSnackBar}
+        onDismiss={() => setIsSnackBar(false)}
+        style={styles.snackBar}
+        >
+          An error has occured
+      </Snackbar>
     </Background>
   )
 }
@@ -94,4 +107,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: theme.colors.primary,
   },
+  snackBar: {
+    backgroundColor: theme.colors.error
+  }
 })

@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useState } from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
-import { Text } from 'react-native-paper'
+import { Snackbar, Text } from 'react-native-paper'
 import Background from '../../components/Authentication/Background'
 import Button from '../../components/Authentication/Button'
 import Header from '../../components/Authentication/Header'
@@ -17,17 +17,15 @@ import { useAuth } from '../../hooks/useAuth'
 type Props = NativeStackScreenProps<RootStackParamList, 'RegisterScreen'>;
 
 export default function RegisterScreen({ navigation }: Props) {
-  const [name, setName] = useState({ value: '', error: '' })
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
   const { signup } = useAuth();
+  const [isSnackBar, setIsSnackBar] = useState(false);
 
   const onSignUpPressed = async () => {
-    const nameError = nameValidator(name.value)
     const emailError = emailValidator(email.value)
     const passwordError = passwordValidator(password.value)
-    if (emailError || passwordError || nameError) {
-      setName({ ...name, error: nameError })
+    if (emailError || passwordError) {
       setEmail({ ...email, error: emailError })
       setPassword({ ...password, error: passwordError })
       return
@@ -35,6 +33,7 @@ export default function RegisterScreen({ navigation }: Props) {
     try {
       await signup(email.value, password.value);
     } catch (error) {
+      setIsSnackBar(true)
       console.log("$$$ - error", error);
     }
   }
@@ -43,13 +42,6 @@ export default function RegisterScreen({ navigation }: Props) {
     <Background>
       {/* <Logo /> */}
       <Header>Create Account</Header>
-      <TextInput
-        label="Name"
-        returnKeyType="next"
-        value={name.value}
-        onChangeText={(text: any) => setName({ value: text, error: '' })}
-        error={!!name.error}
-        errorText={name.error} description={undefined}      />
       <TextInput
         label="Email"
         returnKeyType="next"
@@ -82,6 +74,13 @@ export default function RegisterScreen({ navigation }: Props) {
           <Text style={styles.link}>Login</Text>
         </TouchableOpacity>
       </View>
+      <Snackbar
+        visible={isSnackBar}
+        onDismiss={() => setIsSnackBar(false)}
+        style={styles.snackBar}
+        >
+          An error has occured
+      </Snackbar>
     </Background>
   )
 }
@@ -95,4 +94,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: theme.colors.primary,
   },
+  snackBar: {
+    backgroundColor: theme.colors.error
+  }
 })

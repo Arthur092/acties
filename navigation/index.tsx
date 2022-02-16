@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { ColorSchemeName } from 'react-native';
+import { ColorSchemeName, Pressable } from 'react-native';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
@@ -66,6 +66,15 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator() {
   const colorScheme = useColorScheme();
+  const { signout } = useAuth();
+
+  const signOut = async () => {
+    try {
+      await signout();
+    } catch (error) {
+      console.log("$$$ - error", error);
+    }
+  }
 
   return (
     <BottomTab.Navigator
@@ -79,6 +88,15 @@ function BottomTabNavigator() {
         options={() => ({
           title: 'New Activity',
           tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />,
+          headerRight: () => (
+            <Pressable
+              onPress={signOut}
+              style={({ pressed }) => ({
+                opacity: pressed ? 0.5 : 1,
+              })}>
+              <TabBarIcon name="logout" />
+            </Pressable>
+          ),
         })}
       />
       <BottomTab.Screen
@@ -87,6 +105,15 @@ function BottomTabNavigator() {
         options={{
           title: 'Historical',
           tabBarIcon: ({ color }) => <TabBarIcon name="chart-line" color={color} />,
+          headerRight: () => (
+            <Pressable
+              onPress={signOut}
+              style={({ pressed }) => ({
+                opacity: pressed ? 0.5 : 1,
+              })}>
+              <TabBarIcon name="logout" />
+            </Pressable>
+          ),
         }}
       />
     </BottomTab.Navigator>
@@ -98,7 +125,7 @@ function BottomTabNavigator() {
  */
 function TabBarIcon(props: {
   name: string;
-  color: string;
+  color?: string;
 }) {
   return <List.Icon icon={props.name} color={props.color}/>;
 }
