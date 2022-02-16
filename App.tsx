@@ -5,6 +5,7 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
+import { ProvideAuth } from "./hooks/useAuth";
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -15,10 +16,12 @@ export default function App() {
   } else {
     return (
         <PaperProvider>
-          <SafeAreaProvider>
-            <Navigation colorScheme={colorScheme} />
-            <StatusBar />
-          </SafeAreaProvider>
+          <ProvideAuth>
+            <SafeAreaProvider>
+              <Navigation colorScheme={colorScheme} />
+              <StatusBar />
+            </SafeAreaProvider>
+          </ProvideAuth>
         </PaperProvider>
     );
   }
