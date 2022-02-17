@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { getFirestore, collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import { ActivityType } from './constants/SampleData';
 
 // web app's Firebase configuration
 const firebaseConfig = {
@@ -14,4 +15,11 @@ const firebaseConfig = {
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
+const db = getFirestore();
+
+export const createActivityType = (data: ActivityType) => addDoc(collection(db, "ActivityType"), data);
+
+export const getActivityTypesByUser = (userId: string) => {
+  const q = query(collection(db, "ActivityType"), where("userId", "==", userId));
+  return getDocs(q);
+}

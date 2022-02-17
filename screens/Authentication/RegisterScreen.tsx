@@ -8,18 +8,17 @@ import Header from '../../components/Authentication/Header'
 // import Logo from '../../components/Authentication/Logo'
 import TextInput from '../../components/Authentication/TextInput'
 import { theme } from '../../core/theme'
-import { emailValidator } from '../../helpers/emailValidator'
-import { nameValidator } from '../../helpers/nameValidator'
-import { passwordValidator } from '../../helpers/passwordValidator'
 import { RootStackParamList } from '../../types'
 import { useAuth } from '../../hooks/useAuth'
+import { emailValidator, passwordValidator } from '../../helpers/validators'
+import { createInitialActivities } from '../../helpers/dataCreators'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'RegisterScreen'>;
 
 export default function RegisterScreen({ navigation }: Props) {
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
-  const { signup } = useAuth();
+  const { signup, setUser } = useAuth();
   const [isSnackBar, setIsSnackBar] = useState(false);
 
   const onSignUpPressed = async () => {
@@ -31,7 +30,9 @@ export default function RegisterScreen({ navigation }: Props) {
       return
     }
     try {
-      await signup(email.value, password.value);
+      const newUserData = await signup(email.value, password.value);
+      await createInitialActivities(newUserData.user);
+      setUser(newUserData.user)
     } catch (error) {
       setIsSnackBar(true)
       console.log("$$$ - error", error);

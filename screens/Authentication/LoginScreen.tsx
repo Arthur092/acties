@@ -4,8 +4,6 @@ import { TouchableOpacity, StyleSheet, View } from 'react-native'
 import { Snackbar, Text } from 'react-native-paper'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../types'
-import { emailValidator } from '../../helpers/emailValidator'
-import { passwordValidator } from '../../helpers/passwordValidator'
 import Background from '../../components/Authentication/Background'
 // import Logo from '../../components/Authentication/Logo'
 import Header from '../../components/Authentication/Header'
@@ -13,6 +11,7 @@ import TextInput from '../../components/Authentication/TextInput'
 import Button from '../../components/Authentication/Button'
 import { theme } from '../../core/theme'
 import { useAuth } from '../../hooks/useAuth'
+import { emailValidator, passwordValidator } from '../../helpers/validators'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'StartScreen'>;
 

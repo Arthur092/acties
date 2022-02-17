@@ -1,6 +1,14 @@
 import React, { useState, useEffect, useContext, createContext } from "react";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, User, signOut, onAuthStateChanged } from "firebase/auth";
 import { app } from "../firebase";
+interface ContextValue {
+  user: User | null;
+  isLoading: Boolean;
+  signin: Function;
+  signup: Function;
+  signout: Function;
+  setUser: Function;
+}
 
 const AuthContext = createContext<ContextValue>({
   user: null,
@@ -8,18 +16,11 @@ const AuthContext = createContext<ContextValue>({
   signin: () => null,
   signup: () => null,
   signout: () => null,
+  setUser: () => null,
 });
 
 interface Props {
   children: JSX.Element
-}
-
-interface ContextValue {
-  user: User | null;
-  isLoading: Boolean;
-  signin: Function;
-  signup: Function;
-  signout: Function
 }
 
 export function ProvideAuth({ children }: Props) {
@@ -51,10 +52,6 @@ export function ProvideAuth({ children }: Props) {
 
     const signup = (email: string, password: string) => {
       return createUserWithEmailAndPassword(auth, email, password)
-        .then((response) => {
-          setUser(response.user);
-          return response.user;
-        });
     };
 
     const signout = () => {
@@ -100,6 +97,7 @@ export function ProvideAuth({ children }: Props) {
       signin,
       signup,
       signout,
+      setUser
     //   sendPasswordResetEmail,
     //   confirmPasswordReset,
     };

@@ -21,20 +21,6 @@ export const Activities: Array<ActivityType> = [
     color: 'mediumpurple',
     userId: null,
   },
-  {
-    name: 'Haircut',
-    isQuantity: true,
-    icon: 'account-star',
-    color: 'blue',
-    userId: null,
-  },
-  {
-    name: 'Bank Visit',
-    isQuantity: false,
-    icon: 'bank',
-    color: 'darkorange',
-    userId: null,
-  }
 ]
 
 export type RecordType = {
