@@ -1,24 +1,24 @@
 export type ActivityType = {
   name: string;
   isQuantity: boolean;
-  icon: string;
-  color: string;
-  userId: string | null;
+  iconName: string;
+  iconColor: string;
+  userId?: string | null;
 }
 
 export const Activities: Array<ActivityType> = [
   {
     name: 'Gas',
     isQuantity: true,
-    icon: 'gas-station',
-    color: 'red',
+    iconName: 'gas-station',
+    iconColor: 'red',
     userId: null,
   },
   {
     name: 'Supermarket',
     isQuantity: true,
-    icon: 'shopping',
-    color: 'mediumpurple',
+    iconName: 'shopping',
+    iconColor: 'mediumpurple',
     userId: null,
   },
 ]
@@ -35,8 +35,8 @@ export const Records: Array<RecordType> = [
     activity: {
       name: 'Supermarket',
       isQuantity: true,
-      icon: 'shopping',
-      color: 'mediumpurple',
+      iconName: 'shopping',
+      iconColor: 'mediumpurple',
       userId: null,
     },
     date: '12-12-2021',
@@ -47,8 +47,8 @@ export const Records: Array<RecordType> = [
     activity: {
       name: 'Supermarket',
       isQuantity: true,
-      icon: 'shopping',
-      color: 'mediumpurple',
+      iconName: 'shopping',
+      iconColor: 'mediumpurple',
       userId: null,
     },
     date: '12-30-2021',
@@ -59,8 +59,8 @@ export const Records: Array<RecordType> = [
     activity: {
       name: 'Gas',
       isQuantity: true,
-      icon: 'gas-station',
-      color: 'red',
+      iconName: 'gas-station',
+      iconColor: 'red',
       userId: null,
     },
     date: '12-30-2021',
@@ -71,8 +71,8 @@ export const Records: Array<RecordType> = [
     activity: {
       name: 'Gas',
       isQuantity: true,
-      icon: 'gas-station',
-      color: 'red',
+      iconName: 'gas-station',
+      iconColor: 'red',
       userId: null,
     },
     date: '01-14-2022',

@@ -15,11 +15,23 @@ const firebaseConfig = {
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
-const db = getFirestore();
+const db = getFirestore(app);
 
 export const createActivityType = (data: ActivityType) => addDoc(collection(db, "ActivityType"), data);
 
-export const getActivityTypesByUser = (userId: string) => {
+export const getActivityTypesByUser = async (userId: string) => {
   const q = query(collection(db, "ActivityType"), where("userId", "==", userId));
-  return getDocs(q);
+  const SnapshotActivityTypes = await getDocs(q);
+  const newActivityTypes: Array<ActivityType> = [];
+  SnapshotActivityTypes.forEach((doc) => {
+      const {name, isQuantity, iconName, iconColor, userId} = doc.data();
+      newActivityTypes.push({
+          name,
+          isQuantity,
+          iconName,
+          iconColor,
+          userId,
+      });
+    });
+  return newActivityTypes
 }

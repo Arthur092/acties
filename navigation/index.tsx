@@ -2,19 +2,21 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { ColorSchemeName, Pressable } from 'react-native';
+import { ColorSchemeName, Pressable, StyleSheet } from 'react-native';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
-import NewActivityScreen from '../screens/NewActivityScreen';
+import { NewActivityScreen } from '../screens/NewActivityScreen';
 import LastScreen from '../screens/LastScreen';
 import { RootStackParamList, RootTabParamList } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
-import { List } from 'react-native-paper';
+import { ActivityIndicator, Colors as ActivityColors, List } from 'react-native-paper';
 import { LoginScreen, RegisterScreen, StartScreen } from '../screens/Authentication';
 import { useAuth } from '../hooks/useAuth';
+import { useEffect } from 'react';
+import { useActivities } from '../hooks/useActivities';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -67,6 +69,12 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 function BottomTabNavigator() {
   const colorScheme = useColorScheme();
   const { signout } = useAuth();
+  const { getActivityTypes, activityTypes } = useActivities();
+
+  useEffect(() => {
+    getActivityTypes();
+  },[]);
+
 
   const signOut = async () => {
     try {
@@ -76,7 +84,13 @@ function BottomTabNavigator() {
     }
   }
 
-  return (
+  return <>
+    { activityTypes.isLoading ?
+    <ActivityIndicator
+      animating={true}
+      size='large'
+      color={ActivityColors.purpleA200}
+      style={styles.spinner} /> :
     <BottomTab.Navigator
       initialRouteName="ActivityTab"
       screenOptions={{
@@ -116,8 +130,8 @@ function BottomTabNavigator() {
           ),
         }}
       />
-    </BottomTab.Navigator>
-  );
+    </BottomTab.Navigator>}
+    </>
 }
 
 /**
@@ -129,3 +143,10 @@ function TabBarIcon(props: {
 }) {
   return <List.Icon icon={props.name} color={props.color}/>;
 }
+
+const styles = StyleSheet.create({
+  spinner: {
+    justifyContent: 'center',
+    flex: 1,
+  }
+})
