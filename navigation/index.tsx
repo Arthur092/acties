@@ -84,21 +84,14 @@ function BottomTabNavigator() {
     }
   }
 
-  return <>
-    { activityTypes.isLoading ?
-    <ActivityIndicator
-      animating={true}
-      size='large'
-      color={ActivityColors.purpleA200}
-      style={styles.spinner} /> :
-    <BottomTab.Navigator
+  return <BottomTab.Navigator
       initialRouteName="ActivityTab"
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme].tint,
       }}>
       <BottomTab.Screen
         name="ActivityTab"
-        component={NewActivityScreen}
+        component={activityTypes.isLoading ? ActivitySpinner : NewActivityScreen}
         options={() => ({
           title: 'New Activity',
           tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />,
@@ -130,10 +123,16 @@ function BottomTabNavigator() {
           ),
         }}
       />
-    </BottomTab.Navigator>}
-    </>
+    </BottomTab.Navigator>
 }
 
+function ActivitySpinner() {
+  return <ActivityIndicator
+      animating={true}
+      size='large'
+      color={ActivityColors.purpleA200}
+      style={styles.spinner} />
+}
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
  */

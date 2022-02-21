@@ -40,7 +40,7 @@ const LastScreen = () => {
       </DataTable.Header>
       { Object.entries(records).map(([name, element], index) => (
         <DataTable.Row key={index}>
-          <DataTable.Cell style={styles.firstCell}><List.Icon icon={element.activity.icon} color={element.activity.color}/> { name }</DataTable.Cell>
+          <DataTable.Cell style={styles.firstCell}><List.Icon icon={element.activity.iconName} color={element.activity.iconColor}/> { name }</DataTable.Cell>
           <DataTable.Cell numeric>{ element.quantity }</DataTable.Cell>
           <DataTable.Cell numeric>{moment(element.date).format('ll')}</DataTable.Cell>
         </DataTable.Row>

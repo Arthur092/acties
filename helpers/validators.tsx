@@ -5,14 +5,14 @@ export function emailValidator(email: string) {
     return ''
   }
 
-  export function passwordValidator(password: string) {
-    if (!password) return "Password can't be empty.";
-    if (password.length < 6)
-      return 'Password must be at least 5 characters long.';
-    return '';
-  }
+export function passwordValidator(password: string) {
+  if (!password) return "Password can't be empty.";
+  if (password.length < 6)
+    return 'Password must be at least 5 characters long.';
+  return '';
+}
 
-//   export function nameValidator(name: string) {
-//     if (!name) return "Name can't be empty."
-//     return ''
-//   }
+export function inputValidator(value: string) {
+  if (!value) return "Input can't be empty.";
+  return undefined;
+}
