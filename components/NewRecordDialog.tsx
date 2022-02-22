@@ -7,17 +7,24 @@ import { DatePickerModal } from 'react-native-paper-dates';
 import { inputValidator } from '../helpers/validators';
 import { theme } from '../core/theme';
 import { Text } from 'react-native'
+import { createRecord } from '../firebase';
+import { useAuth } from '../hooks/useAuth';
+import { ActivityType } from '../constants/SampleData';
 
 interface Props {
   visible: boolean;
-  showDialog: (value: boolean) => void;
+  showDialog: (value: boolean, activity?: ActivityType) => void;
+  currentActivity?: ActivityType | null;
+  setSnackBar: Function
 }
 
-export const AddRecordDialog = ({ visible, showDialog }: Props) => {
+export const AddRecordDialog = ({ visible, showDialog, currentActivity, setSnackBar }: Props) => {
+  const { user } = useAuth();
+
   const [number, setNumber] = useState("");
   const [numberError, setNumberError] = useState<string | undefined>(undefined);
-  const [date, setDate] = React.useState<Date | undefined>(new Date());
-  const [open, setOpen] = React.useState(false);
+  const [date, setDate] = useState<Date>(new Date());
+  const [open, setOpen] = useState(false);
 
   const onChanged = (number: string)=>  {
     const numberError = inputValidator(number);
@@ -38,11 +45,27 @@ export const AddRecordDialog = ({ visible, showDialog }: Props) => {
     [setOpen, setDate]
   );
 
-  const onSubmit = () => {
-    const numberError = inputValidator(number);
-    if(numberError){
-      setNumberError(numberError)
-      return
+  const onSubmit = async () => {
+    if(currentActivity?.isQuantity){
+      const numberError = inputValidator(number);
+      if(numberError){
+        setNumberError(numberError)
+        return
+      }
+    }
+    try {
+      if(currentActivity){
+        await createRecord({
+          activity: currentActivity,
+          date,
+          quantity: parseInt(number),
+          userId: user!.uid
+        })
+        setSnackBar({visible: true, message: 'New record added successfuly!', error: false})
+      }
+    } catch (error) {
+      setSnackBar({visible: true, message:'Oppp!, an error ocurred', error: true});
+      console.log("$$$ - error", error);
     }
     showDialog(false)
   }
@@ -56,15 +79,19 @@ export const AddRecordDialog = ({ visible, showDialog }: Props) => {
             <View
               style={styles.input}
             >
-            <TextInput
-              label="Quantity"
-              value={number}
-              onChangeText={onChanged}
-              placeholder='eg. 500'
-              mode='outlined'
-              autoComplete={false}
-              error={numberError ? true : false}
-            />
+            {
+              currentActivity?.isQuantity && (
+                <TextInput
+                  label="Quantity"
+                  value={number}
+                  onChangeText={onChanged}
+                  placeholder='eg. 500'
+                  mode='outlined'
+                  autoComplete={false}
+                  error={numberError ? true : false}
+                />
+              )
+            }
             {numberError ? <Text style={styles.error}>{numberError}</Text> : null}
             </View>
             <TextInput

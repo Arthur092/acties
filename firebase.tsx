@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc, query, where, getDocs } from "firebase/firestore";
-import { ActivityType } from './constants/SampleData';
+import { getFirestore, collection, addDoc, query, where, getDocs, doc } from "firebase/firestore";
+import { ActivityType, RecordType } from './constants/SampleData';
 
 // web app's Firebase configuration
 const firebaseConfig = {
@@ -17,15 +17,18 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// Create ActivityType
 export const createActivityType = (data: ActivityType) => addDoc(collection(db, "ActivityType"), data);
 
+// Get ActivityTypes by user
 export const getActivityTypesByUser = async (userId: string) => {
   const q = query(collection(db, "ActivityType"), where("userId", "==", userId));
   const SnapshotActivityTypes = await getDocs(q);
   const newActivityTypes: Array<ActivityType> = [];
   SnapshotActivityTypes.forEach((doc) => {
-      const {name, isQuantity, iconName, iconColor, userId} = doc.data();
+      const { name, isQuantity, iconName, iconColor, userId} = doc.data();
       newActivityTypes.push({
+          id: doc.id,
           name,
           isQuantity,
           iconName,
@@ -34,4 +37,29 @@ export const getActivityTypesByUser = async (userId: string) => {
       });
     });
   return newActivityTypes
+}
+
+// Create Record
+export const createRecord = (data: RecordType) => {
+  const { activity, ...rest } = data;
+  const activityDoc = doc(db, "ActivityType", activity.id!);
+  return addDoc(collection(db, "Record"), {...rest, ActivityType: activityDoc})
+};
+
+// Get ActivityTypes by user
+export const getRecordsByUser = async (userId: string) => {
+  const q = query(collection(db, "Record"), where("userId", "==", userId));
+  const SnapshotRecords = await getDocs(q);
+  const newRecords: Array<RecordType> = [];
+  SnapshotRecords.forEach((doc) => {
+      const { ActivityType, date, quantity } = doc.data();
+      newRecords.push({
+          id: doc.id,
+          activity: ActivityType,
+          date,
+          quantity,
+          userId,
+      });
+    });
+  return newRecords
 }
