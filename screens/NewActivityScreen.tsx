@@ -14,6 +14,9 @@ export function NewActivityScreen(){
   const [snackBar, setSnackBar] = useState({visible: false, message: '', error: false});
 
   const showDialog = (value: boolean, activity: ActivityType | null = null) => {
+    if(value){
+      setSnackBar({...snackBar, visible: false});
+    }
     if(activity){
       setCurrentActivity(activity);
     }
