@@ -32,9 +32,7 @@ export function ProvideAuth({ children }: Props) {
     );
 }
 
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+export const useAuth = () => useContext(AuthContext);
 
 function useProvideAuth(): ContextValue {
   const [user, setUser] = useState<User | null>(null);
@@ -61,23 +59,6 @@ function useProvideAuth(): ContextValue {
       });
   };
 
-  // const sendPasswordResetEmail = (email) => {
-  //   return firebase
-  //     .auth()
-  //     .sendPasswordResetEmail(email)
-  //     .then(() => {
-  //       return true;
-  //     });
-  // };
-  // const confirmPasswordReset = (code, password) => {
-  //   return firebase
-  //     .auth()
-  //     .confirmPasswordReset(code, password)
-  //     .then(() => {
-  //       return true;
-  //     });
-  // };
-
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -98,7 +79,5 @@ function useProvideAuth(): ContextValue {
     signup,
     signout,
     setUser
-  //   sendPasswordResetEmail,
-  //   confirmPasswordReset,
   };
 }

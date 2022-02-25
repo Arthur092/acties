@@ -69,10 +69,11 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 function BottomTabNavigator() {
   const colorScheme = useColorScheme();
   const { signout } = useAuth();
-  const { getActivityTypes, activityTypes } = useActivities();
+  const { getActivityTypes, activityTypes, getRecords, records } = useActivities();
 
   useEffect(() => {
     getActivityTypes();
+    getRecords();
   },[]);
 
 
@@ -108,7 +109,7 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="LastTab"
-        component={LastScreen}
+        component={records.isLoading ? ActivitySpinner : LastScreen}
         options={{
           title: 'Historical',
           tabBarIcon: ({ color }) => <TabBarIcon name="chart-line" color={color} />,

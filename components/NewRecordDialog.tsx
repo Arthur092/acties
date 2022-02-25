@@ -23,8 +23,14 @@ export const AddRecordDialog = ({ visible, showDialog, currentActivity, setSnack
 
   const [number, setNumber] = useState("");
   const [numberError, setNumberError] = useState<string | undefined>(undefined);
-  const [date, setDate] = useState<Date>(new Date());
+  const [date, setDate] = useState(new Date);
   const [open, setOpen] = useState(false);
+
+  const dismissDialog = () => {
+    setNumber("");
+    setDate(new Date);
+    showDialog(false)
+  }
 
   const onChanged = (number: string)=>  {
     const numberError = inputValidator(number);
@@ -67,14 +73,14 @@ export const AddRecordDialog = ({ visible, showDialog, currentActivity, setSnack
       setSnackBar({visible: true, message:'Oppp!, an error ocurred', error: true});
       console.log("$$$ - error", error);
     }
-    showDialog(false)
+    dismissDialog()
   }
 
   return (
     <Provider>
       <View>
         <Portal>
-        <Dialog visible={visible} onDismiss={() => showDialog(false)}>
+        <Dialog visible={visible} onDismiss={dismissDialog}>
           <Dialog.Content>
             <View
               style={styles.input}

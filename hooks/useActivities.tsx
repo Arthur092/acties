@@ -1,16 +1,23 @@
-import React, { useState, useContext, createContext } from "react";
+import { collection, getDoc, onSnapshot, query } from "firebase/firestore";
+import React, { useState, useContext, createContext, useEffect } from "react";
 import { ActivityType, RecordType } from "../constants/SampleData";
-import { getActivityTypesByUser } from "../firebase";
+import { db, getActivityTypesByUser, getRecordsByUser } from "../firebase";
 import { useAuth } from "./useAuth";
 
 interface ContextValue {
     activityTypes: ActivityTypesState;
-    // records: Array<RecordType>;
+    records: RecordsState;
     getActivityTypes: Function;
+    getRecords: Function
 }
 
 type ActivityTypesState = {
     data: Array<ActivityType>;
+    isLoading: Boolean;
+}
+
+export type RecordsState = {
+    data: Array<RecordType>;
     isLoading: Boolean;
 }
 
@@ -19,8 +26,12 @@ const ActivitiesContext = createContext<ContextValue>({
         data: [],
         isLoading: true
     },
-    // records: [],
+    records: {
+        data: [],
+        isLoading: true
+    },
     getActivityTypes: () => null,
+    getRecords: () => null,
 });
 
 interface Props {
@@ -37,13 +48,55 @@ export function ProvideActivities({ children }: Props) {
     )
 }
 
-export const useActivities = () => {
-    return useContext(ActivitiesContext);
-}
+export const useActivities = () => useContext(ActivitiesContext);
 
 function useProvideActivities(): ContextValue {
     const { user } = useAuth();
+    const [newRecord, setNewRecord] = useState<RecordType | null>(null);
+
+    useEffect(() => {
+        const queryListener = query(collection(db, "Record"));
+        const unsubscribe = onSnapshot(queryListener, (querySnapshot) => {
+            querySnapshot.docChanges().forEach(change => {
+                if (change.type === "added") {
+                    const { activityType, date, quantity, userId } = change.doc.data();
+                    const newRecord = {
+                        id: change.doc.id,
+                        activity: activityType,
+                        date,
+                        quantity,
+                        userId
+                    }
+                    getDoc(newRecord.activity).then(activity => {
+                        setNewRecord({
+                            ...newRecord,
+                            activity: activity.data() as ActivityType
+                        });
+                    });
+                }
+            })
+        });
+
+        return () => unsubscribe();
+    },[]);
+
+    useEffect(() => {
+        if(newRecord){
+            setRecords({
+                ...records,
+                data: [
+                    ...records.data,
+                    newRecord
+                ],
+            })
+        }
+    },[newRecord])
+
     const [activityTypes, setActivityTypes] = useState<ActivityTypesState>({
+        data: [],
+        isLoading: true
+    });
+    const [records, setRecords] = useState<RecordsState>({
         data: [],
         isLoading: true
     });
@@ -61,10 +114,24 @@ function useProvideActivities(): ContextValue {
         }
     }
 
+    const getRecords = () => {
+        if (user) {
+            const { uid } = user;
+            return getRecordsByUser(uid).then(newRecords => {
+                setRecords({
+                    ...records,
+                    data: newRecords,
+                    isLoading: false
+                })
+            });
+        }
+    }
+
     return {
         activityTypes,
-        // records,
+        records,
         getActivityTypes,
+        getRecords
     }
 }
 

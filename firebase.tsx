@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc, query, where, getDocs, doc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, query, where, getDocs, doc, getDoc, DocumentReference } from "firebase/firestore";
 import { ActivityType, RecordType } from './constants/SampleData';
 
 // web app's Firebase configuration
@@ -15,7 +15,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+export const db = getFirestore(app);
 
 // Create ActivityType
 export const createActivityType = (data: ActivityType) => addDoc(collection(db, "ActivityType"), data);
@@ -43,23 +43,33 @@ export const getActivityTypesByUser = async (userId: string) => {
 export const createRecord = (data: RecordType) => {
   const { activity, ...rest } = data;
   const activityDoc = doc(db, "ActivityType", activity.id!);
-  return addDoc(collection(db, "Record"), {...rest, ActivityType: activityDoc})
+  return addDoc(collection(db, "Record"), {...rest, activityType: activityDoc})
 };
 
-// Get ActivityTypes by user
+// Get Records by user
 export const getRecordsByUser = async (userId: string) => {
   const q = query(collection(db, "Record"), where("userId", "==", userId));
   const SnapshotRecords = await getDocs(q);
-  const newRecords: Array<RecordType> = [];
-  SnapshotRecords.forEach((doc) => {
-      const { ActivityType, date, quantity } = doc.data();
-      newRecords.push({
-          id: doc.id,
-          activity: ActivityType,
-          date,
-          quantity,
-          userId,
-      });
+  const newRecords: Array<any> = [];
+
+  SnapshotRecords.forEach(async (doc) => {
+    const { activityType, date, quantity } = doc.data();
+    newRecords.push({
+      id: doc.id,
+      activity: activityType,
+      date,
+      quantity,
+      userId,
     });
-  return newRecords
+  });
+
+  const newRecordPromises = newRecords.map(async record => {
+    const fetchActivity = await getDoc(record.activity);
+    return {
+      ...record,
+      activity: fetchActivity.data()
+    }
+  });
+
+  return Promise.all(newRecordPromises)
 }
