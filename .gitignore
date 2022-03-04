@@ -72,4 +72,7 @@ buck-out/
 web-build/
 dist/
 
+# Covergage
+/coverage
+
 # @end expo-cli

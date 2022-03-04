@@ -31,6 +31,7 @@ export function NewActivityScreen(){
           <View key={index}>
             <Divider />
             <List.Item
+              testID={`list-${index}`}
               title={activity.name}
               left={() => <List.Icon icon={activity.iconName} color={activity.iconColor}/>}
               right={() => <List.Icon icon="plus"/>}

@@ -21,7 +21,7 @@ export type RecordsState = {
     isLoading: Boolean;
 }
 
-const ActivitiesContext = createContext<ContextValue>({
+export const ActivitiesContext = createContext<ContextValue>({
     activityTypes: {
         data: [],
         isLoading: true
@@ -72,6 +72,8 @@ function useProvideActivities(): ContextValue {
                             ...newRecord,
                             activity: activity.data() as ActivityType
                         });
+                    }).catch(err => {
+                        console.log("$$$ - err", err);
                     });
                 }
             })

@@ -81,7 +81,7 @@ export const AddRecordDialog = ({ visible, showDialog, currentActivity, setSnack
       <View>
         <Portal>
         <Dialog visible={visible} onDismiss={dismissDialog}>
-          <Dialog.Content>
+          <Dialog.Content testID='new-record-dialog'>
             <View
               style={styles.input}
             >
@@ -122,7 +122,8 @@ export const AddRecordDialog = ({ visible, showDialog, currentActivity, setSnack
             />
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={onSubmit}>Done</Button>
+            <Button testID='dialog-cancel-button' onPress={dismissDialog}>Cancel</Button>
+            <Button testID='dialog-done--button' onPress={onSubmit}>Done</Button>
           </Dialog.Actions>
         </Dialog>
         </Portal>
