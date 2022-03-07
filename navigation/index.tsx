@@ -16,6 +16,7 @@ import { LoginScreen, RegisterScreen, StartScreen } from '../screens/Authenticat
 import { useAuth } from '../hooks/useAuth';
 import { useEffect } from 'react';
 import { useActivities } from '../hooks/useActivities';
+import { Header } from './Header';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -64,27 +65,29 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator() {
   const colorScheme = useColorScheme();
-  const { signout } = useAuth();
   const { getActivityTypes, activityTypes, getRecords, records } = useActivities();
+  const [visible, setVisible] = React.useState(false);
+  const openMenu = () => setVisible(true);
+  const closeMenu = () => setVisible(false);
 
   useEffect(() => {
     getActivityTypes();
     getRecords();
   },[]);
 
-
-  const signOut = async () => {
-    try {
-      await signout();
-    } catch (error) {
-      console.log("$$$ - error", error);
-    }
-  }
-
   return <BottomTab.Navigator
       initialRouteName="ActivityTab"
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme].tint,
+        header: ({ options, route }: any) => (
+          <Header
+            options={options}
+            route={route}
+            visible={visible}
+            closeMenu={closeMenu}
+            openMenu={openMenu}
+        />
+        )
       }}>
       <BottomTab.Screen
         name="ActivityTab"
@@ -92,15 +95,6 @@ function BottomTabNavigator() {
         options={() => ({
           title: 'New Activity',
           tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />,
-          headerRight: () => (
-            <Pressable
-              onPress={signOut}
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.5 : 1,
-              })}>
-              <TabBarIcon name="logout" />
-            </Pressable>
-          ),
         })}
       />
       <BottomTab.Screen
@@ -109,15 +103,6 @@ function BottomTabNavigator() {
         options={{
           title: 'Historical',
           tabBarIcon: ({ color }) => <TabBarIcon name="chart-line" color={color} />,
-          headerRight: () => (
-            <Pressable
-              onPress={signOut}
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.5 : 1,
-              })}>
-              <TabBarIcon name="logout" />
-            </Pressable>
-          ),
         }}
       />
     </BottomTab.Navigator>
@@ -133,7 +118,7 @@ function ActivitySpinner() {
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
  */
-function TabBarIcon(props: {
+export function TabBarIcon(props: {
   name: string;
   color?: string;
 }) {
