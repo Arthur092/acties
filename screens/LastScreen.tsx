@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { useEffect, useState } from 'react';
 import { DataTable, List } from 'react-native-paper';
 import { RecordType } from '../constants/SampleData';

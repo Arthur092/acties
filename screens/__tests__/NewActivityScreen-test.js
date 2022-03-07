@@ -1,4 +1,4 @@
-import React, { Profiler } from 'react';
+import React from 'react';
 import renderer from 'react-test-renderer';
 import {
   render,
@@ -8,6 +8,7 @@ import {
 } from '@testing-library/react-native';
 import { NewActivityScreen } from '../NewActivityScreen';
 import { ActivitiesContext } from '../../hooks/useActivities';
+import { testActivityContextData } from '../../constants/mocks/activity';
 
 jest.useFakeTimers();
 
@@ -19,28 +20,6 @@ describe('Load NewActivityScreen', () => {
 });
 
 describe('When an activity is clicked', () => {
-  const testActivityContextData = {
-    activityTypes: {
-      data: [
-        {
-          id: 'testid',
-          name: 'testType',
-          isQuantity: 1,
-          iconName: 'gas-station',
-          iconColor: 'red',
-          userId: 'testUserId',
-        },
-      ],
-      isLoading: false,
-    },
-    records: {
-      data: [],
-      isLoading: false,
-    },
-    getActivityTypes: () => null,
-    getRecords: () => null,
-  };
-
   it('should show the dialog', async () => {
     const { getByTestId, debug } = render(
       <ActivitiesContext.Provider value={testActivityContextData}>
@@ -56,7 +35,7 @@ describe('When an activity is clicked', () => {
   });
 
   it('should dissmiss the dialog', async () => {
-    const { getByTestId, debug } = render(
+    const { getByTestId, findByTestId } = render(
       <ActivitiesContext.Provider value={testActivityContextData}>
         <NewActivityScreen />
       </ActivitiesContext.Provider>
@@ -66,12 +45,12 @@ describe('When an activity is clicked', () => {
     const newRecordDialog = await waitFor(() =>
       getByTestId('new-record-dialog')
     );
+    expect(newRecordDialog).toBeDefined();
 
     fireEvent.press(getByTestId('dialog-cancel-button'));
-    const newRecordDialogAfter = await waitForElementToBeRemoved(() =>
+    const removedNode = await waitForElementToBeRemoved(() =>
       getByTestId('new-record-dialog')
     );
-
-    expect(newRecordDialogAfter).toBeDefined();
+    expect(removedNode).toBeDefined();
   });
 });
