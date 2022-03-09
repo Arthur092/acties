@@ -29,7 +29,7 @@ export function NewActivityScreen(){
       <List.Section>
         {activityTypes.data.map((activity, index) => (
           <View key={index}>
-            <Divider />
+            <Divider style={styles(useThemeColor).divider} />
             <List.Item
               testID={`list-${index}`}
               title={activity.name}
@@ -62,7 +62,7 @@ export function NewActivityScreen(){
 
 const styles = (theme: Function) => StyleSheet.create({
   list: {
-    backgroundColor: theme({}, 'background'),
+    backgroundColor: theme({}, 'backgroundItem'),
   },
   snackBarError: {
     backgroundColor: coreTheme.colors.error
@@ -70,4 +70,7 @@ const styles = (theme: Function) => StyleSheet.create({
   snackBarSuccess: {
     backgroundColor: coreTheme.colors.success
   },
+  divider: {
+    backgroundColor: theme({}, 'divider'),
+  }
 });

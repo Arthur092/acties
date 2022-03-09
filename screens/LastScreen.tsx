@@ -1,11 +1,11 @@
 import moment from 'moment';
-import { StyleSheet } from 'react-native';
+import { ViewStyle } from 'react-native';
 import { useEffect, useState } from 'react';
 import { DataTable, List } from 'react-native-paper';
 import { RecordType } from '../constants/SampleData';
 import { useActivities } from '../hooks/useActivities';
 import { Timestamp } from '@firebase/firestore-types'
-
+import { useThemeColor } from '../components/Themed';
 
 // const optionsPerPage = [2, 3, 4];
 
@@ -36,8 +36,8 @@ const LastScreen = () => {
   // }, [itemsPerPage]);
 
   return (
-    <DataTable>
-      <DataTable.Header>
+    <DataTable style={styles.table(useThemeColor)}>
+      <DataTable.Header style={styles.header(useThemeColor)}>
         <DataTable.Title style={styles.firstCell}>Activity</DataTable.Title>
         <DataTable.Title numeric>Number</DataTable.Title>
         <DataTable.Title numeric>date</DataTable.Title>
@@ -64,10 +64,16 @@ const LastScreen = () => {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = {
   firstCell: {
-    flex: 1.3,
-  }
-});
+    flex: 1.4,
+  },
+  table: (theme: any): ViewStyle => {
+    return { backgroundColor: theme({}, 'backgroundTable')}
+  },
+  header: (theme: any): ViewStyle => {
+    return { backgroundColor: theme({}, 'background')}
+  },
+};
 
 export default LastScreen;
