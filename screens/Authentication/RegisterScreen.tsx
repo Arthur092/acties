@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useState } from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
-import { Snackbar, Text } from 'react-native-paper'
+import { Snackbar, Text, useTheme } from 'react-native-paper'
 import Background from '../../components/Authentication/Background'
 import Button from '../../components/Authentication/Button'
 import Header from '../../components/Authentication/Header'
@@ -16,6 +16,7 @@ import { createInitialActivities } from '../../helpers/dataCreators'
 type Props = NativeStackScreenProps<RootStackParamList, 'RegisterScreen'>;
 
 export default function RegisterScreen({ navigation }: Props) {
+  const { colors } = useTheme();
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
   const { signup, setUser } = useAuth();
@@ -72,7 +73,7 @@ export default function RegisterScreen({ navigation }: Props) {
       <View style={styles.row}>
         <Text>Already have an account? </Text>
         <TouchableOpacity onPress={() => navigation.replace('LoginScreen')}>
-          <Text style={styles.link}>Login</Text>
+          <Text style={{...styles.link, color: colors.primary}}>Login</Text>
         </TouchableOpacity>
       </View>
       <Snackbar
@@ -93,7 +94,6 @@ const styles = StyleSheet.create({
   },
   link: {
     fontWeight: 'bold',
-    color: theme.colors.primary,
   },
   snackBar: {
     backgroundColor: theme.colors.error

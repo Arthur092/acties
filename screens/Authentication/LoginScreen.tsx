@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { TouchableOpacity, StyleSheet, View } from 'react-native'
+import { TouchableOpacity, StyleSheet, View, ViewStyle, TextStyle } from 'react-native'
 
 import { Snackbar, Text } from 'react-native-paper'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
@@ -12,10 +12,12 @@ import Button from '../../components/Authentication/Button'
 import { theme } from '../../core/theme'
 import { useAuth } from '../../hooks/useAuth'
 import { emailValidator, passwordValidator } from '../../helpers/validators'
+import { useTheme } from 'react-native-paper';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'StartScreen'>;
 
 export default function LoginScreen({ navigation }: Props) {
+  const { colors } = useTheme();
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
   const { signin } = useAuth();
@@ -41,7 +43,7 @@ export default function LoginScreen({ navigation }: Props) {
   return (
     <Background>
       {/* <Logo /> */}
-      <Header>Welcome back.</Header>
+      <Header>Welcome back</Header>
       <TextInput
         label="Email"
         returnKeyType="next"
@@ -72,9 +74,9 @@ export default function LoginScreen({ navigation }: Props) {
         Login
       </Button>
       <View style={styles.row}>
-        <Text> Don’t have an account? </Text>
+        <Text> Don’t have an account?</Text>
         <TouchableOpacity onPress={() => navigation.replace('RegisterScreen')}>
-          <Text style={styles.link}>Sign up</Text>
+          <Text style={{...styles.link, color: colors.primary}}>Sign up</Text>
         </TouchableOpacity>
       </View>
       <Snackbar
@@ -88,7 +90,7 @@ export default function LoginScreen({ navigation }: Props) {
   )
 }
 
-const styles = StyleSheet.create({
+const styles: Record<string, ViewStyle | TextStyle> = {
   forgotPassword: {
     width: '100%',
     alignItems: 'flex-end',
@@ -104,9 +106,8 @@ const styles = StyleSheet.create({
   },
   link: {
     fontWeight: 'bold',
-    color: theme.colors.primary,
   },
   snackBar: {
     backgroundColor: theme.colors.error
   }
-})
+}

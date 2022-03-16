@@ -1,17 +1,22 @@
 import React from 'react';
 import {
   ImageBackground,
-  StyleSheet,
   KeyboardAvoidingView,
+  ViewStyle,
 } from 'react-native';
-import { theme } from '../../core/theme';
+import { useTheme } from 'react-native-paper';
 
-export default function Background({ children }) {
+interface Props {
+  children: Array<JSX.Element>
+}
+
+export default function Background({ children }: Props) {
+  const { colors } = useTheme();
   return (
     <ImageBackground
       source={require('../../assets/background_dot.png')}
       resizeMode='repeat'
-      style={styles.background}
+      style={{...styles.background, backgroundColor: colors.surface}}
     >
       <KeyboardAvoidingView style={styles.container} behavior='padding'>
         {children}
@@ -20,11 +25,10 @@ export default function Background({ children }) {
   );
 }
 
-const styles = StyleSheet.create({
+const styles: Record<string, ViewStyle> = {
   background: {
     flex: 1,
     width: '100%',
-    backgroundColor: theme.colors.surface,
   },
   container: {
     flex: 1,
@@ -35,4 +39,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-});
+};
