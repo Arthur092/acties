@@ -10,7 +10,7 @@ interface ContextValue {
   setUser: Function;
 }
 
-const AuthContext = createContext<ContextValue>({
+export const AuthContext = createContext<ContextValue>({
   user: null,
   isLoading: true,
   signin: () => null,

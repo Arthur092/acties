@@ -61,6 +61,4 @@ export const testActivityContextData = {
       ],
       isLoading: false,
     },
-    getActivityTypes: () => null,
-    getRecords: () => null,
   }

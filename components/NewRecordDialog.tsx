@@ -88,6 +88,7 @@ export const AddRecordDialog = ({ visible, showDialog, currentActivity, setSnack
             {
               currentActivity?.isQuantity && (
                 <TextInput
+                  testID='input-qty'
                   label="Quantity"
                   value={number}
                   onChangeText={onChanged}
@@ -98,7 +99,7 @@ export const AddRecordDialog = ({ visible, showDialog, currentActivity, setSnack
                 />
               )
             }
-            {numberError ? <Text style={styles.error}>{numberError}</Text> : null}
+            {numberError ? <Text testID='input-qty-error' style={styles.error}>{numberError}</Text> : null}
             </View>
             <TextInput
               label="Date"
@@ -123,7 +124,7 @@ export const AddRecordDialog = ({ visible, showDialog, currentActivity, setSnack
           </Dialog.Content>
           <Dialog.Actions>
             <Button testID='dialog-cancel-button' onPress={dismissDialog}>Cancel</Button>
-            <Button testID='dialog-done--button' onPress={onSubmit}>Done</Button>
+            <Button testID='dialog-done-button' onPress={onSubmit}>Done</Button>
           </Dialog.Actions>
         </Dialog>
         </Portal>

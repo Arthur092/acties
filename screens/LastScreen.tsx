@@ -7,11 +7,7 @@ import { useActivities } from '../hooks/useActivities';
 import { Timestamp } from '@firebase/firestore-types'
 import { useThemeColor } from '../components/Themed';
 
-// const optionsPerPage = [2, 3, 4];
-
 const LastScreen = () => {
-  // const [page, setPage] = useState<number>(0);
-  // const [itemsPerPage, setItemsPerPage] = useState(optionsPerPage[0]);
   const [records, setRecords] = useState<Record<string, RecordType>>({});
   const { records: fetchRecords } = useActivities();
 
@@ -31,10 +27,6 @@ const LastScreen = () => {
     setRecords(initialRecords);
   }, [fetchRecords]);
 
-  // useEffect(() => {
-  //   setPage(0);
-  // }, [itemsPerPage]);
-
   return (
     <DataTable style={styles.table(useThemeColor)}>
       <DataTable.Header style={styles.header(useThemeColor)}>
@@ -49,17 +41,6 @@ const LastScreen = () => {
           <DataTable.Cell numeric>{moment((element.date as Timestamp).toDate()).format('ll')}</DataTable.Cell>
         </DataTable.Row>
       ))}
-
-      {/* <DataTable.Pagination
-        page={page}
-        numberOfPages={0}
-        onPageChange={(page) => setPage(page)}
-        // label="1-2 of 6"
-        // numberOfItemsPerPage={itemsPerPage}
-        // numberOfItemsPerPageList={[1,2,3]}
-        // onItemsPerPageChange={setItemsPerPage}
-        // selectPageDropdownLabel={'Rows per page'}
-      /> */}
     </DataTable>
   );
 }
