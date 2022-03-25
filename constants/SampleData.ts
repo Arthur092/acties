@@ -15,6 +15,7 @@ export type RecordType = {
   date: Date | Timestamp;
   quantity: number | null;
   userId: string | null;
+  activityId: string
 }
 
 export const Activities: Array<ActivityType> = [

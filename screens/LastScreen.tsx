@@ -30,13 +30,15 @@ const LastScreen = () => {
   return (
     <DataTable style={styles.table(useThemeColor)}>
       <DataTable.Header style={styles.header(useThemeColor)}>
-        <DataTable.Title style={styles.firstCell}>Activity</DataTable.Title>
+        <DataTable.Title>Icon</DataTable.Title>
+        <DataTable.Title>Activity</DataTable.Title>
         <DataTable.Title numeric>Number</DataTable.Title>
         <DataTable.Title numeric>date</DataTable.Title>
       </DataTable.Header>
       { Object.entries(records).map(([name, element], index) => (
         <DataTable.Row key={index}>
-          <DataTable.Cell style={styles.firstCell}><List.Icon icon={element.activity.iconName} color={element.activity.iconColor}/> { name }</DataTable.Cell>
+          <DataTable.Cell><List.Icon icon={element.activity.iconName} color={element.activity.iconColor}/></DataTable.Cell>
+          <DataTable.Cell>{name}</DataTable.Cell>
           <DataTable.Cell numeric>{ element.quantity }</DataTable.Cell>
           <DataTable.Cell numeric>{moment((element.date as Timestamp).toDate()).format('ll')}</DataTable.Cell>
         </DataTable.Row>
@@ -46,9 +48,6 @@ const LastScreen = () => {
 }
 
 const styles = {
-  firstCell: {
-    flex: 1.4,
-  },
   table: (theme: any): ViewStyle => {
     return { backgroundColor: theme({}, 'backgroundTable')}
   },

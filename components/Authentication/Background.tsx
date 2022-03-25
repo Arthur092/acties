@@ -14,8 +14,6 @@ export default function Background({ children }: Props) {
   const { colors } = useTheme();
   return (
     <ImageBackground
-      source={require('../../assets/background_dot.png')}
-      resizeMode='repeat'
       style={{...styles.background, backgroundColor: colors.surface}}
     >
       <KeyboardAvoidingView style={styles.container} behavior='padding'>

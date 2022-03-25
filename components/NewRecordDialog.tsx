@@ -65,7 +65,8 @@ export const AddRecordDialog = ({ visible, showDialog, currentActivity, setSnack
           activity: currentActivity,
           date,
           quantity: parseInt(number),
-          userId: user!.uid
+          userId: user!.uid,
+          activityId: currentActivity.id!
         })
         setSnackBar({visible: true, message: 'New record added successfuly!', error: false})
       }

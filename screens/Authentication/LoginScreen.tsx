@@ -74,7 +74,7 @@ export default function LoginScreen({ navigation }: Props) {
         Login
       </Button>
       <View style={styles.row}>
-        <Text> Don’t have an account?</Text>
+        <Text> Don’t have an account? </Text>
         <TouchableOpacity onPress={() => navigation.replace('RegisterScreen')}>
           <Text style={{...styles.link, color: colors.primary}}>Sign up</Text>
         </TouchableOpacity>
