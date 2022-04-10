@@ -59,13 +59,14 @@ function useProvideActivities(): ContextValue {
         const unsubscribe = onSnapshot(queryListener, (querySnapshot) => {
             querySnapshot.docChanges().forEach(change => {
                 if (change.type === "added") {
-                    const { activityType, date, quantity, userId } = change.doc.data();
+                    const { activityType, date, quantity, userId, activityId } = change.doc.data();
                     const newRecord = {
                         id: change.doc.id,
                         activity: activityType,
                         date,
                         quantity,
-                        userId
+                        userId,
+                        activityId
                     }
                     getDoc(newRecord.activity).then(activity => {
                         setNewRecord({
@@ -83,7 +84,7 @@ function useProvideActivities(): ContextValue {
     },[]);
 
     useEffect(() => {
-        if(newRecord){
+        if(newRecord && newRecord.userId === user?.uid){
             setRecords({
                 ...records,
                 data: [

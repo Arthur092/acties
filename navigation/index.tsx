@@ -112,7 +112,6 @@ function ActivitySpinner() {
   return <ActivityIndicator
       animating={true}
       size='large'
-      color={ActivityColors.purpleA200}
       style={styles.spinner} />
 }
 /**

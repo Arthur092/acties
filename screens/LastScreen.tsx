@@ -30,17 +30,17 @@ const LastScreen = () => {
   return (
     <DataTable style={styles.table(useThemeColor)}>
       <DataTable.Header style={styles.header(useThemeColor)}>
-        <DataTable.Title>Icon</DataTable.Title>
-        <DataTable.Title>Activity</DataTable.Title>
-        <DataTable.Title numeric>Number</DataTable.Title>
-        <DataTable.Title numeric>date</DataTable.Title>
+        <DataTable.Title style={{flex: 0.5}}>Icon</DataTable.Title>
+        <DataTable.Title style={{justifyContent: 'center'}}>Activity</DataTable.Title>
+        <DataTable.Title style={{justifyContent: 'center'}}>Number</DataTable.Title>
+        <DataTable.Title style={{justifyContent: 'center'}}>date</DataTable.Title>
       </DataTable.Header>
       { Object.entries(records).map(([name, element], index) => (
         <DataTable.Row key={index}>
-          <DataTable.Cell><List.Icon icon={element.activity.iconName} color={element.activity.iconColor}/></DataTable.Cell>
-          <DataTable.Cell>{name}</DataTable.Cell>
-          <DataTable.Cell numeric>{ element.quantity }</DataTable.Cell>
-          <DataTable.Cell numeric>{moment((element.date as Timestamp).toDate()).format('ll')}</DataTable.Cell>
+          <DataTable.Cell style={styles.icon}><List.Icon icon={element.activity.iconName} color={element.activity.iconColor}/></DataTable.Cell>
+          <DataTable.Cell style={{justifyContent: 'right'}}>{name}</DataTable.Cell>
+          <DataTable.Cell style={{justifyContent: 'center'}}>{ element.quantity }</DataTable.Cell>
+          <DataTable.Cell style={{justifyContent: 'center'}}>{moment((element.date as Timestamp).toDate()).format('l')}</DataTable.Cell>
         </DataTable.Row>
       ))}
     </DataTable>
@@ -53,6 +53,10 @@ const styles = {
   },
   header: (theme: any): ViewStyle => {
     return { backgroundColor: theme({}, 'background')}
+  },
+  icon: {
+    flex: 0.5,
+    marginLeft: '-14px'
   },
 };
 

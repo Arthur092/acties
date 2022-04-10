@@ -2,9 +2,9 @@
 import * as React from 'react';
 import { useCallback, useState } from 'react';
 import { View, StyleSheet  } from 'react-native';
-import { Button, Dialog, Portal, Provider, TextInput } from 'react-native-paper';
+import { Button, Dialog, Portal, TextInput } from 'react-native-paper';
 import { DatePickerModal } from 'react-native-paper-dates';
-import { inputValidator } from '../helpers/validators';
+import { numberValidator } from '../helpers/validators';
 import { theme } from '../core/theme';
 import { Text } from 'react-native'
 import { createRecord } from '../firebase';
@@ -33,9 +33,9 @@ export const AddRecordDialog = ({ visible, showDialog, currentActivity, setSnack
   }
 
   const onChanged = (number: string)=>  {
-    const numberError = inputValidator(number);
+    const numberError = numberValidator(number);
     setNumberError(numberError)
-    const newNumber = number.replace(/[^0-9]/g, '')
+    const newNumber = number.replace(/[^0-9.]/g, '')
     setNumber(newNumber);
   }
 
@@ -53,7 +53,7 @@ export const AddRecordDialog = ({ visible, showDialog, currentActivity, setSnack
 
   const onSubmit = async () => {
     if(currentActivity?.isQuantity){
-      const numberError = inputValidator(number);
+      const numberError = numberValidator(number);
       if(numberError){
         setNumberError(numberError)
         return
@@ -78,7 +78,7 @@ export const AddRecordDialog = ({ visible, showDialog, currentActivity, setSnack
   }
 
   return (
-    <Provider>
+    <>
       <View>
         <Portal>
         <Dialog visible={visible} onDismiss={dismissDialog}>
@@ -130,7 +130,7 @@ export const AddRecordDialog = ({ visible, showDialog, currentActivity, setSnack
         </Dialog>
         </Portal>
       </View>
-    </Provider>
+    </>
   );
 }
 

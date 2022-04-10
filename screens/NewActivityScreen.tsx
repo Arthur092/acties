@@ -25,7 +25,7 @@ export function NewActivityScreen(){
   const { activityTypes } = useActivities();
 
   return (
-    <Provider>
+    <>
       <List.Section>
         {activityTypes.data.map((activity, index) => (
           <View key={index}>
@@ -56,7 +56,7 @@ export function NewActivityScreen(){
         >
           {snackBar.message}
       </Snackbar>
-    </Provider>
+    </>
   );
 }
 

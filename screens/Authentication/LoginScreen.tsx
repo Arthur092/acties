@@ -5,7 +5,7 @@ import { Snackbar, Text } from 'react-native-paper'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../types'
 import Background from '../../components/Authentication/Background'
-// import Logo from '../../components/Authentication/Logo'
+import Logo from '../../components/Authentication/Logo'
 import Header from '../../components/Authentication/Header'
 import TextInput from '../../components/Authentication/TextInput'
 import Button from '../../components/Authentication/Button'
@@ -42,7 +42,7 @@ export default function LoginScreen({ navigation }: Props) {
 
   return (
     <Background>
-      {/* <Logo /> */}
+      <Logo />
       <Header>Welcome back</Header>
       <TextInput
         label="Email"

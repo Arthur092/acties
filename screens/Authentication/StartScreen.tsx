@@ -13,7 +13,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'StartScreen'>;
 export default function StartScreen({ navigation }: Props) {
   return (
     <Background>
-      {/* <Logo /> */}
+      <Logo />
       <Header>Welcome to Acties!</Header>
       <Paragraph>
         Please select an option to authenticate

@@ -5,7 +5,7 @@ import { Snackbar, Text, useTheme } from 'react-native-paper'
 import Background from '../../components/Authentication/Background'
 import Button from '../../components/Authentication/Button'
 import Header from '../../components/Authentication/Header'
-// import Logo from '../../components/Authentication/Logo'
+import Logo from '../../components/Authentication/Logo'
 import TextInput from '../../components/Authentication/TextInput'
 import { theme } from '../../core/theme'
 import { RootStackParamList } from '../../types'
@@ -42,7 +42,7 @@ export default function RegisterScreen({ navigation }: Props) {
 
   return (
     <Background>
-      {/* <Logo /> */}
+      <Logo />
       <Header>Create Account</Header>
       <TextInput
         label="Email"
