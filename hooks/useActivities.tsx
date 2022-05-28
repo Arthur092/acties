@@ -1,6 +1,6 @@
 import { collection, getDoc, onSnapshot, query } from "firebase/firestore";
 import React, { useState, useContext, createContext, useEffect } from "react";
-import { ActivityType, RecordType } from "../constants/SampleData";
+import { ActivityType, RecordType } from "../constants/Types";
 import { db, getActivityTypesByUser, getRecordsByUser } from "../firebase";
 import { useAuth } from "./useAuth";
 

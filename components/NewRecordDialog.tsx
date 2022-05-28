@@ -9,7 +9,7 @@ import { theme } from '../core/theme';
 import { Text } from 'react-native'
 import { createRecord } from '../firebase';
 import { useAuth } from '../hooks/useAuth';
-import { ActivityType } from '../constants/SampleData';
+import { ActivityType } from "../constants/Types";
 
 interface Props {
   visible: boolean;
@@ -64,7 +64,7 @@ export const AddRecordDialog = ({ visible, showDialog, currentActivity, setSnack
         await createRecord({
           activity: currentActivity,
           date,
-          quantity: parseInt(number),
+          quantity: parseFloat(number),
           userId: user!.uid,
           activityId: currentActivity.id!
         })

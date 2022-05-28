@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Provider, Divider, List, Snackbar } from 'react-native-paper';
+import { Divider, List, Snackbar } from 'react-native-paper';
 import { AddRecordDialog } from '../components/NewRecordDialog';
 import { useThemeColor } from '../components/Themed';
-import { ActivityType } from '../constants/SampleData';
+import { ActivityType } from "../constants/Types";
 import { useActivities } from '../hooks/useActivities';
 import { theme as coreTheme} from '../core/theme'
 

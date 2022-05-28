@@ -2,7 +2,7 @@ import moment from 'moment';
 import { ViewStyle } from 'react-native';
 import { useEffect, useState } from 'react';
 import { DataTable, List } from 'react-native-paper';
-import { RecordType } from '../constants/SampleData';
+import { RecordType } from "../constants/Types";
 import { useActivities } from '../hooks/useActivities';
 import { Timestamp } from '@firebase/firestore-types'
 import { useThemeColor } from '../components/Themed';
