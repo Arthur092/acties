@@ -2,6 +2,7 @@ import { collection, getDoc, onSnapshot, query } from "firebase/firestore";
 import React, { useState, useContext, createContext, useEffect } from "react";
 import { ActivityType, RecordType } from "../constants/Types";
 import { db, getActivityTypesByUser, getRecordsByUser } from "../firebase";
+import { getActivityWithId } from "../helpers/utils";
 import { useAuth } from "./useAuth";
 
 interface ContextValue {
@@ -71,7 +72,7 @@ function useProvideActivities(): ContextValue {
                     getDoc(newRecord.activity).then(activity => {
                         setNewRecord({
                             ...newRecord,
-                            activity: activity.data() as ActivityType
+                            activity: getActivityWithId(activity) as ActivityType
                         });
                     }).catch(err => {
                         console.log("$$$ - err", err);

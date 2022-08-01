@@ -6,6 +6,7 @@
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { CompositeScreenProps, NavigatorScreenParams } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { ActivityType } from './constants/Types';
 
 declare global {
   namespace ReactNavigation {
@@ -20,6 +21,10 @@ export type RootStackParamList = {
   StartScreen: undefined;
   LoginScreen: undefined;
   RegisterScreen: undefined;
+  LastScreen: undefined;
+  ActivityReport: {
+    activity: ActivityType
+  };
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<

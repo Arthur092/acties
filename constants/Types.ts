@@ -7,6 +7,7 @@ export type ActivityType = {
   iconName: string;
   iconColor: string;
   userId?: string | null;
+  monthDay?: number;
 };
 
 export type RecordType = {

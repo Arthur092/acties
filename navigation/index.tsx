@@ -17,6 +17,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useEffect } from 'react';
 import { useActivities } from '../hooks/useActivities';
 import { Header } from './Header';
+import ActivityReport from '../screens/ActivityReport';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -44,6 +45,7 @@ function RootNavigator() {
       {user ? (
         <>
         <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
+        <Stack.Screen name="ActivityReport" component={ActivityReport} options={{ headerShown: true }} />
         </>) : (
         <>
         <Stack.Screen name="StartScreen" component={StartScreen} options={{ title: 'Welcome' }} />

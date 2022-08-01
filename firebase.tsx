@@ -1,9 +1,9 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc, query, where, getDocs, doc, getDoc, DocumentReference } from "firebase/firestore";
-import { ActivityType, RecordType } from './constants/SampleData';
+import { getFirestore, collection, addDoc, query, where, getDocs, doc, getDoc } from "firebase/firestore";
+import { ActivityType, RecordType } from "./constants/Types";
+import { getActivityWithId } from './helpers/utils';
 
-// web app's Firebase configuration
-const firebaseConfig = {
+const prodConfig = {
   apiKey: 'AIzaSyDlVfIs_a_XCwx3fSxYlsRyktAdqJE0sgc',
   authDomain: 'acties-f8e89.firebaseapp.com',
   databaseURL: 'https://acties-f8e89-default-rtdb.firebaseio.com',
@@ -11,6 +11,20 @@ const firebaseConfig = {
   storageBucket: 'acties-f8e89.appspot.com',
   messagingSenderId: '606075828354',
   appId: '1:606075828354:web:2262a0bd4c88eca1f31c9b',
+}
+
+const devConfig = {
+  apiKey: "AIzaSyB9xMhcbdoYlV9MMF4RtnIdch8mYsa3MRg",
+  authDomain: "acties-dev.firebaseapp.com",
+  projectId: "acties-dev",
+  storageBucket: "acties-dev.appspot.com",
+  messagingSenderId: "481435189705",
+  appId: "1:481435189705:web:6e086abbf7fc59316ba818"
+}
+
+// web app's Firebase configuration
+const firebaseConfig = {
+  ...prodConfig
 };
 
 // Initialize Firebase
@@ -67,7 +81,7 @@ export const getRecordsByUser = async (userId: string) => {
     const fetchActivity = await getDoc(record.activity);
     return {
       ...record,
-      activity: fetchActivity.data()
+      activity: getActivityWithId(fetchActivity)
     }
   });
 

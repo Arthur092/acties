@@ -90,7 +90,7 @@ export const AddRecordDialog = ({ visible, showDialog, currentActivity, setSnack
               currentActivity?.isQuantity && (
                 <TextInput
                   testID='input-qty'
-                  label="Quantity"
+                  label="L."
                   value={number}
                   onChangeText={onChanged}
                   placeholder='eg. 500'
