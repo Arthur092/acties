@@ -60,13 +60,14 @@ function useProvideActivities(): ContextValue {
         const unsubscribe = onSnapshot(queryListener, (querySnapshot) => {
             querySnapshot.docChanges().forEach(change => {
                 if (change.type === "added") {
-                    const { activityType, date, quantity, userId, activityId } = change.doc.data();
+                    const { activityType, date, quantity, userId, activityId, note } = change.doc.data();
                     const newRecord = {
                         id: change.doc.id,
                         activity: activityType,
                         date,
                         quantity,
                         userId,
+                        note,
                         activityId
                     }
                     getDoc(newRecord.activity).then(activity => {

@@ -1,7 +1,7 @@
 import moment, { Moment } from 'moment';
 import { ScrollView, View, ViewStyle } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { DataTable, FAB, IconButton, Text } from 'react-native-paper';
+import { IconButton, Text } from 'react-native-paper';
 import { ActivityType, RecordType } from "../constants/Types";
 import { useActivities } from '../hooks/useActivities';
 import { Timestamp } from '@firebase/firestore-types'
@@ -19,7 +19,6 @@ const ActivityReport = ({ route } : Props) => {
   const { records: fetchedRecords } = useActivities();
   const [monthlyRecords, setMonthlyRecords] = useState<Array<RecordType>>([]);
   const { activity } = route.params;
-  console.log('\x1b[36m$$$ ~ monthlyViewDate', monthlyViewDate);
 
   useEffect(() => {
     const initialRecords: Array<RecordType> = fetchedRecords.data.reduce((acc: Array<RecordType>, element: RecordType) => {
@@ -121,8 +120,8 @@ const ActivityReport = ({ route } : Props) => {
 const styles = {
   monthlyContainer: {
     flexDirection: 'row',
-    paddingTop: '27px',
-    paddingBottom: '12px',
+    paddingTop: 27,
+    paddingBottom: 12,
 
   },
   monthlyItem: {

@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc, query, where, getDocs, doc, getDoc } from "firebase/firestore";
+import { collection, addDoc, query, where, getDocs, doc, getDoc, initializeFirestore } from "firebase/firestore";
 import { ActivityType, RecordType } from "./constants/Types";
 import { getActivityWithId } from './helpers/utils';
 
@@ -29,7 +29,9 @@ const firebaseConfig = {
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+export const db = initializeFirestore(app, {
+  experimentalForceLongPolling: true,
+});
 
 // Create ActivityType
 export const createActivityType = (data: ActivityType) => addDoc(collection(db, "ActivityType"), data);
@@ -40,7 +42,7 @@ export const getActivityTypesByUser = async (userId: string) => {
   const SnapshotActivityTypes = await getDocs(q);
   const newActivityTypes: Array<ActivityType> = [];
   SnapshotActivityTypes.forEach((doc) => {
-      const { name, isQuantity, iconName, iconColor, userId} = doc.data();
+      const { name, isQuantity, iconName, iconColor, userId, isNote} = doc.data();
       newActivityTypes.push({
           id: doc.id,
           name,
@@ -48,6 +50,7 @@ export const getActivityTypesByUser = async (userId: string) => {
           iconName,
           iconColor,
           userId,
+          isNote
       });
     });
   return newActivityTypes
@@ -67,12 +70,13 @@ export const getRecordsByUser = async (userId: string) => {
   const newRecords: Array<any> = [];
 
   SnapshotRecords.forEach(async (doc) => {
-    const { activityType, date, quantity } = doc.data();
+    const { activityType, date, quantity, note } = doc.data();
     newRecords.push({
       id: doc.id,
       activity: activityType,
       date,
       quantity,
+      note,
       userId,
     });
   });

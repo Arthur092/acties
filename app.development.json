@@ -23,6 +23,7 @@
       "bundleIdentifier": "Acties"
     },
     "android": {
+      "package": "com.arthur.acties",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"

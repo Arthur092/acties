@@ -4,6 +4,7 @@ import { DataTable, List } from 'react-native-paper';
 import { RecordType } from "../constants/Types";
 import { Timestamp } from '@firebase/firestore-types'
 import { useThemeColor } from '../components/Themed';
+import { formatDecimal } from '../helpers/utils';
 
 type Props = {
     records: Array<RecordType>
@@ -11,35 +12,47 @@ type Props = {
     onPress?: (element: RecordType) => void
 }
 
+const getDetails = (element: RecordType) => {
+  if (element.quantity) {
+    const currency = element.activity.currency ? element.activity.currency + ' ' : 'L. ';
+    return currency + formatDecimal(element.quantity);
+  }
+
+  return element.note ?? '';
+}
+
 export const RecordsTable = ({ records, showTotal, onPress }: Props) => {
   const total = records.reduce((acc, record) => {
     acc += record.quantity ?? 0
     return acc;
-  }, 0)
+  }, 0).toFixed(2)
+  const background = useThemeColor({}, 'background');
     return (
     <DataTable style={styles.table(useThemeColor)}>
         <DataTable.Header style={styles.header(useThemeColor)}>
             <DataTable.Title style={{flex: 0.5}}>Icon</DataTable.Title>
             <DataTable.Title style={{justifyContent: 'center'}}>Activity</DataTable.Title>
-            <DataTable.Title style={{justifyContent: 'center'}}>Number</DataTable.Title>
+            <DataTable.Title style={{justifyContent: 'center'}}>Details</DataTable.Title>
             <DataTable.Title style={{justifyContent: 'center'}}>date</DataTable.Title>
         </DataTable.Header>
-        { records.map((element, index) => (
+        { records.map((element, index) => {
+          const rowDetails = getDetails(element);
+          return (
             <DataTable.Row
               key={index}
               onPress={onPress ? () => onPress(element) : () => {}}>
-            <DataTable.Cell style={styles.icon}><List.Icon icon={element.activity.iconName} color={element.activity.iconColor}/></DataTable.Cell>
-            <DataTable.Cell style={{justifyContent: 'right'}}>{element.activity.name}</DataTable.Cell>
-            <DataTable.Cell style={{justifyContent: 'center'}}>{element.activity.currency ?? 'L. '} {element.quantity}</DataTable.Cell>
-            <DataTable.Cell style={{justifyContent: 'center'}}>{moment((element.date as Timestamp).toDate()).format('l')}</DataTable.Cell>
+              <DataTable.Cell style={styles.icon}><List.Icon icon={element.activity.iconName} color={element.activity.iconColor}/></DataTable.Cell>
+              <DataTable.Cell style={{justifyContent: 'flex-end'}}>{element.activity.name}</DataTable.Cell>
+              <DataTable.Cell style={{justifyContent: 'center'}}>{rowDetails}</DataTable.Cell>
+              <DataTable.Cell style={{justifyContent: 'center'}}>{moment((element.date as Timestamp).toDate()).format('l')}</DataTable.Cell>
             </DataTable.Row>
-        ))}
+        )})}
         {
-          showTotal && (
-            <DataTable.Row style={{ backgroundColor: useThemeColor({}, 'background') }} key={'total'}>
-              <DataTable.Cell style={{justifyContent: 'left'}}>Total</DataTable.Cell>
-              <DataTable.Cell style={{justifyContent: 'left'}}>L. {total}</DataTable.Cell>
-              <DataTable.Cell style={{justifyContent: 'left'}}></DataTable.Cell>
+          showTotal && total > 0 && (
+            <DataTable.Row style={{ backgroundColor: background }} key={'total'}>
+              <DataTable.Cell style={{justifyContent: 'flex-start'}}>Total</DataTable.Cell>
+              <DataTable.Cell style={{justifyContent: 'flex-start'}}>L. {formatDecimal(total)}</DataTable.Cell>
+              <DataTable.Cell style={{justifyContent: 'flex-start'}}></DataTable.Cell>
               <DataTable.Cell style={{justifyContent: 'center'}}></DataTable.Cell>
             </DataTable.Row>
           )
@@ -57,6 +70,6 @@ const styles = {
     },
     icon: {
       flex: 0.5,
-      marginLeft: '-14px'
+      marginLeft: -14
     },
   };

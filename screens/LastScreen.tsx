@@ -1,4 +1,3 @@
-import { ViewStyle } from 'react-native';
 import { useEffect, useState } from 'react';
 import { RecordType } from "../constants/Types";
 import { useActivities } from '../hooks/useActivities';

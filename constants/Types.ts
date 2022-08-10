@@ -8,6 +8,8 @@ export type ActivityType = {
   iconColor: string;
   userId?: string | null;
   monthDay?: number;
+  isNote?: boolean;
+  currency?: string;
 };
 
 export type RecordType = {
@@ -15,6 +17,7 @@ export type RecordType = {
   activity: ActivityType;
   date: Date | Timestamp;
   quantity: number | null;
+  note?: string;
   userId: string | null;
   activityId: string;
 };

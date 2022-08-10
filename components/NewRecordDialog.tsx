@@ -10,6 +10,7 @@ import { Text } from 'react-native'
 import { createRecord } from '../firebase';
 import { useAuth } from '../hooks/useAuth';
 import { ActivityType } from "../constants/Types";
+import DatePicker from 'react-native-date-picker'
 
 interface Props {
   visible: boolean;
@@ -22,14 +23,17 @@ export const AddRecordDialog = ({ visible, showDialog, currentActivity, setSnack
   const { user } = useAuth();
 
   const [number, setNumber] = useState("");
+  const [note, setNote] = useState("");
   const [numberError, setNumberError] = useState<string | undefined>(undefined);
   const [date, setDate] = useState(new Date);
-  const [open, setOpen] = useState(false);
+  const [openDate, setOpenDate] = useState(false);
+  // const [open, setOpen] = useState(false);
 
   const dismissDialog = () => {
     setNumber("");
     setDate(new Date);
-    showDialog(false)
+    setOpenDate(false);
+    showDialog(false);
   }
 
   const onChanged = (number: string)=>  {
@@ -40,15 +44,15 @@ export const AddRecordDialog = ({ visible, showDialog, currentActivity, setSnack
   }
 
   const onDismissSingle = useCallback(() => {
-    setOpen(false);
-  }, [setOpen]);
+    setOpenDate(false);
+  }, [setOpenDate]);
 
   const onConfirmSingle = useCallback(
     (params) => {
-      setOpen(false);
-      setDate(params.date);
+      setOpenDate(false);
+      setDate(params);
     },
-    [setOpen, setDate]
+    [setOpenDate, setDate]
   );
 
   const onSubmit = async () => {
@@ -66,6 +70,7 @@ export const AddRecordDialog = ({ visible, showDialog, currentActivity, setSnack
           date,
           quantity: parseFloat(number),
           userId: user!.uid,
+          note,
           activityId: currentActivity.id!
         })
         setSnackBar({visible: true, message: 'New record added successfuly!', error: false})
@@ -100,6 +105,19 @@ export const AddRecordDialog = ({ visible, showDialog, currentActivity, setSnack
                 />
               )
             }
+            {
+              currentActivity?.isNote && (
+                <TextInput
+                  testID='input-note'
+                  label="Note"
+                  value={note}
+                  onChangeText={setNote}
+                  placeholder='eg. details'
+                  mode='outlined'
+                  autoComplete={false}
+                />
+              )
+            }
             {numberError ? <Text testID='input-qty-error' style={styles.error}>{numberError}</Text> : null}
             </View>
             <TextInput
@@ -110,10 +128,10 @@ export const AddRecordDialog = ({ visible, showDialog, currentActivity, setSnack
               style={styles.input}
               autoComplete={false}
             />
-            <Button onPress={() => setOpen(true)} uppercase={false} mode="outlined">
+            <Button onPress={() => setOpenDate(true)} uppercase={false} mode="outlined">
                Change Date
             </Button>
-            <DatePickerModal
+            {/* <DatePickerModal
               locale="en"
               mode="single"
               visible={open}
@@ -121,7 +139,17 @@ export const AddRecordDialog = ({ visible, showDialog, currentActivity, setSnack
               date={date}
               onConfirm={onConfirmSingle}
               label="Select a date"
-            />
+            /> */}
+            {openDate &&
+              <DatePicker
+                modal
+                open={openDate}
+                date={date}
+                onConfirm={onConfirmSingle}
+                onCancel={onDismissSingle}
+                mode={"date"}
+              />
+            }
           </Dialog.Content>
           <Dialog.Actions>
             <Button testID='dialog-cancel-button' onPress={dismissDialog}>Cancel</Button>
