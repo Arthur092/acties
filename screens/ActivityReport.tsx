@@ -1,7 +1,7 @@
 import moment, { Moment } from 'moment';
 import { ScrollView, View, ViewStyle } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { IconButton, Text } from 'react-native-paper';
+import { IconButton, Snackbar, Text } from 'react-native-paper';
 import { ActivityType, RecordType } from "../constants/Types";
 import { useActivities } from '../hooks/useActivities';
 import { Timestamp } from '@firebase/firestore-types'
@@ -10,6 +10,8 @@ import { RootStackParamList } from '../types';
 import { Button } from 'react-native-paper';
 import { RecordsTable } from '../components/RecordsTable'
 import { useThemeColor } from '../components/Themed';
+import { RecordDialog } from '../components/RecordDialog';
+import { theme as coreTheme} from '../core/theme'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ActivityReport'> & { activity: ActivityType };
 
@@ -19,6 +21,19 @@ const ActivityReport = ({ route } : Props) => {
   const { records: fetchedRecords } = useActivities();
   const [monthlyRecords, setMonthlyRecords] = useState<Array<RecordType>>([]);
   const { activity } = route.params;
+  const [isDialogVisile, setIsDialogVisile] = useState(false);
+  const [snackBar, setSnackBar] = useState({visible: false, message: '', error: false});
+  const [currentRecord, setCurrentRecord] = useState<RecordType | null>(null);
+
+  const showDialog = (value: boolean, recordData: RecordType | null = null) => {
+    if(value){
+      setSnackBar({...snackBar, visible: false});
+    }
+    if(recordData){
+      setCurrentRecord(recordData);
+    }
+    setIsDialogVisile(value);
+  };
 
   useEffect(() => {
     const initialRecords: Array<RecordType> = fetchedRecords.data.reduce((acc: Array<RecordType>, element: RecordType) => {
@@ -108,11 +123,29 @@ const ActivityReport = ({ route } : Props) => {
       <RecordsTable
         records={monthlyViewDate ? monthlyRecords : records}
         showTotal={true}
+        onPress={(element: RecordType) => {
+          showDialog(true, element)
+        }
+      }
       />
     </ScrollView>
     <Button mode='outlined' style={styles.floatButton(useThemeColor)} onPress={monthlyViewDate ? onRegularView : onMontlyView}>
       {monthlyViewDate ? "Regular View" : "Mothly View"}
     </Button>
+    <RecordDialog
+      visible={isDialogVisile}
+      showDialog={showDialog}
+      currentActivity={activity}
+      setSnackBar={setSnackBar}
+      recordData={currentRecord}
+    />
+    <Snackbar
+      visible={snackBar.visible}
+      onDismiss={() => setSnackBar({...snackBar, visible: false})}
+      style={snackBar.error ? styles.snackBarError : styles.snackBarSuccess}
+      >
+        {snackBar.message}
+    </Snackbar>
   </>
   );
 }
@@ -133,6 +166,12 @@ const styles = {
     lineHeight: 24,
     textAlign: 'center',
     paddingTop: 9
+  },
+  snackBarError: {
+    backgroundColor: coreTheme.colors.error
+  },
+  snackBarSuccess: {
+    backgroundColor: coreTheme.colors.success
   },
   floatButton: (theme: any): ViewStyle => {
     return {

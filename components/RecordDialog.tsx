@@ -1,33 +1,41 @@
 
 import * as React from 'react';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { View, StyleSheet  } from 'react-native';
 import { Button, Dialog, Portal, TextInput } from 'react-native-paper';
-import { DatePickerModal } from 'react-native-paper-dates';
 import { numberValidator } from '../helpers/validators';
 import { theme } from '../core/theme';
 import { Text } from 'react-native'
-import { createRecord } from '../firebase';
+import { createRecord, deleteRecord, updateRecord } from '../firebase';
 import { useAuth } from '../hooks/useAuth';
-import { ActivityType } from "../constants/Types";
+import { ActivityType, RecordType } from "../constants/Types";
 import DatePicker from 'react-native-date-picker'
+import { Timestamp } from 'firebase/firestore';
 
 interface Props {
   visible: boolean;
-  showDialog: (value: boolean, activity?: ActivityType) => void;
+  showDialog: (value: boolean) => void;
   currentActivity?: ActivityType | null;
   setSnackBar: Function
+  recordData?: RecordType | null
 }
 
-export const AddRecordDialog = ({ visible, showDialog, currentActivity, setSnackBar }: Props) => {
+export const RecordDialog = ({ visible, showDialog, currentActivity, setSnackBar, recordData }: Props) => {
   const { user } = useAuth();
 
   const [number, setNumber] = useState("");
   const [note, setNote] = useState("");
-  const [numberError, setNumberError] = useState<string | undefined>(undefined);
   const [date, setDate] = useState(new Date);
+  const [numberError, setNumberError] = useState<string | undefined>(undefined);
   const [openDate, setOpenDate] = useState(false);
   // const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    setNote(recordData?.note ?? "");
+    setNumber(recordData?.quantity?.toString()  ?? "");
+    const currentDate = recordData?.date ? recordData.date as Timestamp : null;
+    setDate(currentDate ? new Date(currentDate.seconds * 1000) : new Date);
+  },[recordData])
 
   const dismissDialog = () => {
     setNumber("");
@@ -65,15 +73,28 @@ export const AddRecordDialog = ({ visible, showDialog, currentActivity, setSnack
     }
     try {
       if(currentActivity){
-        await createRecord({
-          activity: currentActivity,
-          date,
-          quantity: parseFloat(number),
-          userId: user!.uid,
-          note,
-          activityId: currentActivity.id!
-        })
-        setSnackBar({visible: true, message: 'New record added successfuly!', error: false})
+        if(recordData){
+          await updateRecord({
+            id: recordData.id,
+            activity: currentActivity,
+            date,
+            quantity: parseFloat(number),
+            userId: user!.uid,
+            note,
+            activityId: currentActivity.id!
+          })
+          setSnackBar({visible: true, message: 'Record edited successfuly!', error: false})
+        } else {
+          await createRecord({
+            activity: currentActivity,
+            date,
+            quantity: parseFloat(number),
+            userId: user!.uid,
+            note,
+            activityId: currentActivity.id!
+          })
+          setSnackBar({visible: true, message: 'New record added successfuly!', error: false})
+        }
       }
     } catch (error) {
       setSnackBar({visible: true, message:'Oppp!, an error ocurred', error: true});
@@ -81,6 +102,14 @@ export const AddRecordDialog = ({ visible, showDialog, currentActivity, setSnack
     }
     dismissDialog()
   }
+
+  const onDelete = async () => {
+    if(recordData){
+      await deleteRecord(recordData);
+      setSnackBar({visible: true, message:'Record deleted succesfully!', error: false});
+    }
+    dismissDialog()
+  };
 
   return (
     <>
@@ -153,7 +182,10 @@ export const AddRecordDialog = ({ visible, showDialog, currentActivity, setSnack
           </Dialog.Content>
           <Dialog.Actions>
             <Button testID='dialog-cancel-button' onPress={dismissDialog}>Cancel</Button>
-            <Button testID='dialog-done-button' onPress={onSubmit}>Done</Button>
+            <Button testID='dialog-done-button' onPress={onSubmit}>{recordData ? 'Save' : 'Done'}</Button>
+            {recordData &&
+              <Button testID='dialog-delete-button' onPress={onDelete}>Delete</Button>
+            }
           </Dialog.Actions>
         </Dialog>
         </Portal>

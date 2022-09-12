@@ -1,5 +1,10 @@
 {
   "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "c3dadc7e-c1f0-4773-a75e-073cc0843879"
+      }
+    },
     "name": "Acties",
     "slug": "Acties",
     "version": "1.0.6",

@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { collection, addDoc, query, where, getDocs, doc, getDoc, initializeFirestore } from "firebase/firestore";
+import { collection, addDoc, query, where, getDocs, doc, getDoc, initializeFirestore, setDoc, deleteDoc } from "firebase/firestore";
 import { ActivityType, RecordType } from "./constants/Types";
 import { getActivityWithId } from './helpers/utils';
 
@@ -61,6 +61,21 @@ export const createRecord = (data: RecordType) => {
   const { activity, ...rest } = data;
   const activityDoc = doc(db, "ActivityType", activity.id!);
   return addDoc(collection(db, "Record"), {...rest, activityType: activityDoc})
+};
+
+// Update Record
+export const updateRecord = (data: RecordType) => {
+  const { activity, id, ...rest } = data;
+  const activityDoc = doc(db, "ActivityType", activity.id!);
+  return setDoc(doc(db, "Record", id!), {
+    ...rest,
+    activityType: activityDoc
+  });
+};
+
+// Delete Record
+export const deleteRecord = (data: RecordType) => {
+  return deleteDoc(doc(db, "Record", data.id!))
 };
 
 // Get Records by user

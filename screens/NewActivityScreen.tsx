@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Divider, List, Snackbar } from 'react-native-paper';
-import { AddRecordDialog } from '../components/NewRecordDialog';
+import { RecordDialog } from '../components/RecordDialog';
 import { useThemeColor } from '../components/Themed';
 import { ActivityType } from "../constants/Types";
 import { useActivities } from '../hooks/useActivities';
@@ -43,7 +43,7 @@ export function NewActivityScreen(){
         <Divider />
       </List.Section>
 
-      <AddRecordDialog
+      <RecordDialog
         visible={isDialogVisile}
         showDialog={showDialog}
         currentActivity={currentActivity}

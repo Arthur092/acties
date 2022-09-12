@@ -54,7 +54,8 @@ export const useActivities = () => useContext(ActivitiesContext);
 function useProvideActivities(): ContextValue {
     const { user } = useAuth();
     const [newRecord, setNewRecord] = useState<RecordType | null>(null);
-
+    const [modifiedRecord, setModifiedRecord] = useState<RecordType | null>(null);
+    const [removedRecord, setRemovedRecord] = useState<Record<string, string> | null>(null);
     useEffect(() => {
         const queryListener = query(collection(db, "Record"));
         const unsubscribe = onSnapshot(queryListener, (querySnapshot) => {
@@ -78,6 +79,32 @@ function useProvideActivities(): ContextValue {
                     }).catch(err => {
                         console.log("$$$ - err", err);
                     });
+                } else if (change.type === "modified") {
+                    const { activityType, date, quantity, userId, activityId, note } = change.doc.data();
+                    const editedRecord = {
+                        id: change.doc.id,
+                        activity: activityType,
+                        date,
+                        quantity,
+                        userId,
+                        note,
+                        activityId
+                    }
+                    getDoc(editedRecord.activity).then(activity => {
+                        setModifiedRecord({
+                            ...editedRecord,
+                            activity: getActivityWithId(activity) as ActivityType
+                        });
+                    }).catch(err => {
+                        console.log("$$$ - err", err);
+                    });
+                } else if (change.type === "removed") {
+                    const { userId} = change.doc.data();
+                    const removedRecord = {
+                        id: change.doc.id,
+                        userId
+                    }
+                    setRemovedRecord(removedRecord);
                 }
             })
         });
@@ -96,6 +123,24 @@ function useProvideActivities(): ContextValue {
             })
         }
     },[newRecord])
+
+    useEffect(() => {
+        if(modifiedRecord && modifiedRecord.userId === user?.uid){
+            setRecords({
+                ...records,
+                data: records.data.map(record => record.id === modifiedRecord.id ? modifiedRecord : record),
+            })
+        }
+    },[modifiedRecord])
+
+    useEffect(() => {
+        if(removedRecord && removedRecord.userId === user?.uid){
+            setRecords({
+                ...records,
+                data: records.data.filter(record => record.id !== removedRecord.id),
+            })
+        }
+    },[removedRecord])
 
     const [activityTypes, setActivityTypes] = useState<ActivityTypesState>({
         data: [],
