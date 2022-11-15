@@ -51,7 +51,7 @@ export const RecordsTable = ({ records, showTotal, onPress }: Props) => {
           showTotal && total > 0 && (
             <DataTable.Row style={{ backgroundColor: background }} key={'total'}>
               <DataTable.Cell style={{justifyContent: 'flex-start'}}>Total</DataTable.Cell>
-              <DataTable.Cell style={{justifyContent: 'flex-start'}}>L. {formatDecimal(total)}</DataTable.Cell>
+              <DataTable.Cell style={{justifyContent: 'flex-start'}}>{records[0].activity.currency ?? 'L.'} {formatDecimal(total)}</DataTable.Cell>
               <DataTable.Cell style={{justifyContent: 'flex-start'}}></DataTable.Cell>
               <DataTable.Cell style={{justifyContent: 'center'}}></DataTable.Cell>
             </DataTable.Row>

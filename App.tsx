@@ -6,6 +6,7 @@ import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
 import { ProvideAuth } from "./hooks/useAuth";
+import { ProvideRecords } from './hooks/useRecords';
 import { ProvideActivities } from './hooks/useActivities';
 
 const lightTheme = {
@@ -36,10 +37,12 @@ export default function App() {
         <PaperProvider theme={theme}>
           <ProvideAuth>
             <ProvideActivities>
-              <SafeAreaProvider>
-                <Navigation colorScheme={colorScheme} />
-                <StatusBar />
-              </SafeAreaProvider>
+              <ProvideRecords>
+                <SafeAreaProvider>
+                  <Navigation colorScheme={colorScheme} />
+                  <StatusBar />
+                </SafeAreaProvider>
+              </ProvideRecords>
             </ProvideActivities>
           </ProvideAuth>
         </PaperProvider>

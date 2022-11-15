@@ -16,7 +16,11 @@ interface Props {
   visible: boolean;
   showDialog: (value: boolean) => void;
   currentActivity?: ActivityType | null;
-  setSnackBar: Function
+  setSnackBar: React.Dispatch<React.SetStateAction<{
+    visible: boolean;
+    message: string;
+    error: boolean;
+  }>>,
   recordData?: RecordType | null
 }
 
@@ -124,7 +128,7 @@ export const RecordDialog = ({ visible, showDialog, currentActivity, setSnackBar
               currentActivity?.isQuantity && (
                 <TextInput
                   testID='input-qty'
-                  label="L."
+                  label={currentActivity.currency ?? "L."}
                   value={number}
                   onChangeText={onChanged}
                   placeholder='eg. 500'
@@ -160,15 +164,6 @@ export const RecordDialog = ({ visible, showDialog, currentActivity, setSnackBar
             <Button onPress={() => setOpenDate(true)} uppercase={false} mode="outlined">
                Change Date
             </Button>
-            {/* <DatePickerModal
-              locale="en"
-              mode="single"
-              visible={open}
-              onDismiss={onDismissSingle}
-              date={date}
-              onConfirm={onConfirmSingle}
-              label="Select a date"
-            /> */}
             {openDate &&
               <DatePicker
                 modal

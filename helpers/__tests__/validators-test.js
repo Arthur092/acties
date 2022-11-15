@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { emailValidator, inputValidator, passwordValidator } from '../validators';
 
 describe('Emails', () => {
@@ -37,7 +38,7 @@ describe('Passwords', () => {
 describe('Inputs', () => {
   it('should return undefined if no error', () => {
     const result = inputValidator('123');
-    expect(result).toBe(undefined);
+    expect(result).toBe('');
   })
 
   it('should return empty error if input is empty', () => {

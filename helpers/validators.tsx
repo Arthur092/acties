@@ -12,6 +12,14 @@ export function numberValidator(number: string) {
   return ''
 }
 
+export function monthDayValidator(number: string) {
+  if(!number){
+    return '';
+  }
+  if (parseInt(number) > 31) return "The number can't be grater than 31"
+  return ''
+}
+
 export function passwordValidator(password: string) {
   if (!password) return "Password can't be empty.";
   if (password.length < 6)
@@ -21,5 +29,5 @@ export function passwordValidator(password: string) {
 
 export function inputValidator(value: string) {
   if (!value) return "Input can't be empty.";
-  return undefined;
+  return '';
 }

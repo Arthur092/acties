@@ -36,13 +36,24 @@ export const db = initializeFirestore(app, {
 // Create ActivityType
 export const createActivityType = (data: ActivityType) => addDoc(collection(db, "ActivityType"), data);
 
+// Update ActivityType
+export const updateActivityType = (data: ActivityType) => {
+  const { id, ...rest } = data;
+  return setDoc(doc(db, "ActivityType", id!), rest)
+};
+
+// Delete Activity
+export const deleteActivity = (data: ActivityType) => {
+  return deleteDoc(doc(db, "ActivityType", data.id!))
+};
+
 // Get ActivityTypes by user
 export const getActivityTypesByUser = async (userId: string) => {
   const q = query(collection(db, "ActivityType"), where("userId", "==", userId));
   const SnapshotActivityTypes = await getDocs(q);
   const newActivityTypes: Array<ActivityType> = [];
   SnapshotActivityTypes.forEach((doc) => {
-      const { name, isQuantity, iconName, iconColor, userId, isNote} = doc.data();
+      const { name, isQuantity, iconName, iconColor, userId, isNote, addedAt} = doc.data();
       newActivityTypes.push({
           id: doc.id,
           name,
@@ -50,7 +61,8 @@ export const getActivityTypesByUser = async (userId: string) => {
           iconName,
           iconColor,
           userId,
-          isNote
+          isNote,
+          addedAt
       });
     });
   return newActivityTypes

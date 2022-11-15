@@ -1,25 +1,17 @@
-import { collection, getDoc, onSnapshot, query } from "firebase/firestore";
+import { collection, onSnapshot, query } from "firebase/firestore";
 import React, { useState, useContext, createContext, useEffect } from "react";
-import { ActivityType, RecordType } from "../constants/Types";
-import { db, getActivityTypesByUser, getRecordsByUser } from "../firebase";
-import { getActivityWithId } from "../helpers/utils";
+import { ActivityType } from "../constants/Types";
+import { db, getActivityTypesByUser } from "../firebase";
 import { useAuth } from "./useAuth";
 
 interface ContextValue {
     activityTypes: ActivityTypesState;
-    records: RecordsState;
-    getActivityTypes: Function;
-    getRecords: Function
+    getActivityTypes: () => void;
 }
 
 type ActivityTypesState = {
     data: Array<ActivityType>;
-    isLoading: Boolean;
-}
-
-export type RecordsState = {
-    data: Array<RecordType>;
-    isLoading: Boolean;
+    isLoading: boolean;
 }
 
 export const ActivitiesContext = createContext<ContextValue>({
@@ -27,12 +19,7 @@ export const ActivitiesContext = createContext<ContextValue>({
         data: [],
         isLoading: true
     },
-    records: {
-        data: [],
-        isLoading: true
-    },
     getActivityTypes: () => null,
-    getRecords: () => null,
 });
 
 interface Props {
@@ -53,124 +40,52 @@ export const useActivities = () => useContext(ActivitiesContext);
 
 function useProvideActivities(): ContextValue {
     const { user } = useAuth();
-    const [newRecord, setNewRecord] = useState<RecordType | null>(null);
-    const [modifiedRecord, setModifiedRecord] = useState<RecordType | null>(null);
-    const [removedRecord, setRemovedRecord] = useState<Record<string, string> | null>(null);
-    useEffect(() => {
-        const queryListener = query(collection(db, "Record"));
-        const unsubscribe = onSnapshot(queryListener, (querySnapshot) => {
-            querySnapshot.docChanges().forEach(change => {
-                if (change.type === "added") {
-                    const { activityType, date, quantity, userId, activityId, note } = change.doc.data();
-                    const newRecord = {
-                        id: change.doc.id,
-                        activity: activityType,
-                        date,
-                        quantity,
-                        userId,
-                        note,
-                        activityId
-                    }
-                    getDoc(newRecord.activity).then(activity => {
-                        setNewRecord({
-                            ...newRecord,
-                            activity: getActivityWithId(activity) as ActivityType
-                        });
-                    }).catch(err => {
-                        console.log("$$$ - err", err);
-                    });
-                } else if (change.type === "modified") {
-                    const { activityType, date, quantity, userId, activityId, note } = change.doc.data();
-                    const editedRecord = {
-                        id: change.doc.id,
-                        activity: activityType,
-                        date,
-                        quantity,
-                        userId,
-                        note,
-                        activityId
-                    }
-                    getDoc(editedRecord.activity).then(activity => {
-                        setModifiedRecord({
-                            ...editedRecord,
-                            activity: getActivityWithId(activity) as ActivityType
-                        });
-                    }).catch(err => {
-                        console.log("$$$ - err", err);
-                    });
-                } else if (change.type === "removed") {
-                    const { userId} = change.doc.data();
-                    const removedRecord = {
-                        id: change.doc.id,
-                        userId
-                    }
-                    setRemovedRecord(removedRecord);
-                }
-            })
-        });
-
-        return () => unsubscribe();
-    },[]);
-
-    useEffect(() => {
-        if(newRecord && newRecord.userId === user?.uid){
-            setRecords({
-                ...records,
-                data: [
-                    ...records.data,
-                    newRecord
-                ],
-            })
-        }
-    },[newRecord])
-
-    useEffect(() => {
-        if(modifiedRecord && modifiedRecord.userId === user?.uid){
-            setRecords({
-                ...records,
-                data: records.data.map(record => record.id === modifiedRecord.id ? modifiedRecord : record),
-            })
-        }
-    },[modifiedRecord])
-
-    useEffect(() => {
-        if(removedRecord && removedRecord.userId === user?.uid){
-            setRecords({
-                ...records,
-                data: records.data.filter(record => record.id !== removedRecord.id),
-            })
-        }
-    },[removedRecord])
-
+    const [newActivityTypes, setNewActivityTypes] = useState<ActivityType[]>([]);
     const [activityTypes, setActivityTypes] = useState<ActivityTypesState>({
         data: [],
         isLoading: true
     });
-    const [records, setRecords] = useState<RecordsState>({
-        data: [],
-        isLoading: true
-    });
+
+    useEffect(() => {
+        if (user) {
+            setActivityTypes({
+                data: newActivityTypes.filter((activityType => activityType.userId === user.uid)),
+                isLoading: newActivityTypes.length > 0 ? false : true,
+            })
+        }
+    }, [newActivityTypes])
+
+    useEffect(() => {
+        const activityTypesCollection = collection(db, 'ActivityType');
+        const q = query(activityTypesCollection);
+
+        const unsubscribe = onSnapshot(q, querySnapshot => {
+            setNewActivityTypes(querySnapshot.docs.map(doc => {
+                const {  userId, name, isQuantity, iconName, iconColor, monthDay, isNote, currency,addedAt } = doc.data();
+                return {
+                    id: doc.id,
+                    name,
+                    isQuantity,
+                    iconName,
+                    iconColor,
+                    userId,
+                    monthDay,
+                    isNote,
+                    currency,
+                    addedAt
+                }
+            }))
+        });
+
+        return () => unsubscribe();
+    }, []);
 
     const getActivityTypes = () => {
         if (user) {
             const { uid } = user;
             return getActivityTypesByUser(uid).then(newActivityTypes => {
                 setActivityTypes({
-                    ...activityTypes,
                     data: newActivityTypes,
-                    isLoading: false
-                })
-            });
-        }
-    }
-
-    const getRecords = () => {
-        if (user) {
-            const { uid } = user;
-            return getRecordsByUser(uid).then(newRecords => {
-                setRecords({
-                    ...records,
-                    data: newRecords,
                     isLoading: false
                 })
             });
@@ -179,9 +94,7 @@ function useProvideActivities(): ContextValue {
 
     return {
         activityTypes,
-        records,
         getActivityTypes,
-        getRecords
     }
 }
 

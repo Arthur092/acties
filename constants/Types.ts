@@ -10,6 +10,7 @@ export type ActivityType = {
   monthDay?: number;
   isNote?: boolean;
   currency?: string;
+  addedAt?: Date | Timestamp;
 };
 
 export type RecordType = {

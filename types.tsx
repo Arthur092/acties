@@ -25,6 +25,9 @@ export type RootStackParamList = {
   ActivityReport: {
     activity: ActivityType
   };
+  ActivitiesScreen: {
+    activityTypes: ActivityType[]
+  }
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<
