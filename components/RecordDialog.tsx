@@ -144,6 +144,8 @@ export const RecordDialog = ({ visible, showDialog, currentActivity, setSnackBar
                   testID='input-note'
                   label="Note"
                   value={note}
+                  multiline
+                  numberOfLines={4}
                   onChangeText={setNote}
                   placeholder='eg. details'
                   mode='outlined'
