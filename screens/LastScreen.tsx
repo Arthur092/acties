@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { RecordType } from "../constants/Types";
-import { useActivities } from '../hooks/useActivities';
+import { useRecords } from '../hooks/useRecords';
 import { Timestamp } from '@firebase/firestore-types'
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
@@ -10,7 +10,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'LastScreen'>;
 
 const LastScreen = ({ navigation }: Props) => {
   const [records, setRecords] = useState<Record<string, RecordType>>({});
-  const { records: fetchRecords } = useActivities();
+  const { records: fetchRecords } = useRecords();
 
   useEffect(() => {
     const initialRecords: Record<string, RecordType> = fetchRecords.data.reduce((acc: Record<string, RecordType>, element: RecordType) => {

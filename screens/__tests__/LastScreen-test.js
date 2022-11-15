@@ -1,9 +1,11 @@
+/* eslint-disable no-undef */
 import React from 'react';
 import renderer from 'react-test-renderer';
 import { render } from '@testing-library/react-native';
 import LastScreen from '../LastScreen';
 import { testActivityContextData } from '../../constants/mocks/activity';
 import { ActivitiesContext } from '../../hooks/useActivities';
+import { RecordsContext } from '../../hooks/useRecords';
 
 jest.useFakeTimers();
 
@@ -12,7 +14,9 @@ describe('Load LastScreen', () => {
     const tree = renderer
       .create(
         <ActivitiesContext.Provider value={testActivityContextData}>
-          <LastScreen />
+          <RecordsContext.Provider>
+            <LastScreen />
+          </RecordsContext.Provider>
         </ActivitiesContext.Provider>
       )
       .toJSON();
@@ -22,7 +26,9 @@ describe('Load LastScreen', () => {
   it('should renders with different value', () => {
     const { getByTestId } = render(
       <ActivitiesContext.Provider value={testActivityContextData}>
-        <LastScreen />
+        <RecordsContext.Provider>
+          <LastScreen />
+        </RecordsContext.Provider>
       </ActivitiesContext.Provider>
     );
   });

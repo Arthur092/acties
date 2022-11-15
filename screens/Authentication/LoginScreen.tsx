@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { TouchableOpacity, StyleSheet, View, ViewStyle, TextStyle } from 'react-native'
+import { TouchableOpacity, View, ViewStyle, TextStyle } from 'react-native'
 
 import { Snackbar, Text } from 'react-native-paper'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'

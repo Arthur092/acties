@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { ColorSchemeName, Pressable, StyleSheet } from 'react-native';
+import { ColorSchemeName, StyleSheet } from 'react-native';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
@@ -11,13 +11,15 @@ import { NewActivityScreen } from '../screens/NewActivityScreen';
 import LastScreen from '../screens/LastScreen';
 import { RootStackParamList, RootTabParamList } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
-import { ActivityIndicator, Colors as ActivityColors, List } from 'react-native-paper';
+import { ActivityIndicator, List } from 'react-native-paper';
 import { LoginScreen, RegisterScreen, StartScreen } from '../screens/Authentication';
 import { useAuth } from '../hooks/useAuth';
 import { useEffect } from 'react';
-import { useActivities } from '../hooks/useActivities';
+import { useRecords } from '../hooks/useRecords';
 import { Header } from './Header';
 import ActivityReport from '../screens/ActivityReport';
+import { ActivitiesScreen } from '../screens/ActivitiesScreen';
+import { useActivities } from '../hooks/useActivities';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -44,13 +46,14 @@ function RootNavigator() {
     <Stack.Navigator>
       {user ? (
         <>
-        <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
-        <Stack.Screen name="ActivityReport" component={ActivityReport} options={{ headerShown: true }} />
+          <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
+          <Stack.Screen name="ActivityReport" component={ActivityReport} options={{ title: "Activity Report",headerShown: true }} />
+          <Stack.Screen name="ActivitiesScreen" component={ActivitiesScreen} options={{ title: 'Activities Screen',headerShown: true }} />
         </>) : (
         <>
-        <Stack.Screen name="StartScreen" component={StartScreen} options={{ title: 'Welcome' }} />
-        <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ title: 'Login' }} />
-        <Stack.Screen name="RegisterScreen" component={RegisterScreen} options={{ title: 'Register' }} />
+          <Stack.Screen name="StartScreen" component={StartScreen} options={{ title: 'Welcome' }} />
+          <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ title: 'Login' }} />
+          <Stack.Screen name="RegisterScreen" component={RegisterScreen} options={{ title: 'Register' }} />
         </>
         )
       }
@@ -67,7 +70,8 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator() {
   const colorScheme = useColorScheme();
-  const { getActivityTypes, activityTypes, getRecords, records } = useActivities();
+  const { getActivityTypes, activityTypes } = useActivities();
+  const { getRecords, records } = useRecords();
   const [visible, setVisible] = React.useState(false);
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -81,13 +85,14 @@ function BottomTabNavigator() {
       initialRouteName="ActivityTab"
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme].tint,
-        header: ({ options, route }: any) => (
+        header: ({ options, route, navigation }: any) => (
           <Header
             options={options}
             route={route}
             visible={visible}
             closeMenu={closeMenu}
             openMenu={openMenu}
+            navigation={navigation}
         />
         )
       }}>

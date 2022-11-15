@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import React from 'react';
 import renderer from 'react-test-renderer';
 import {
@@ -8,6 +9,7 @@ import {
 } from '@testing-library/react-native';
 import { NewActivityScreen } from '../NewActivityScreen';
 import { ActivitiesContext } from '../../hooks/useActivities';
+import { RecordsContext } from '../../hooks/useRecords';
 import { AuthContext } from '../../hooks/useAuth';
 import { testActivityContextData } from '../../constants/mocks/activity';
 import { testAuthContextData } from '../../constants/mocks/auth';
@@ -26,7 +28,9 @@ describe('When an activity is clicked', () => {
   it('should show the dialog', async () => {
     const { getByTestId, debug } = render(
       <ActivitiesContext.Provider value={testActivityContextData}>
-        <NewActivityScreen />
+        <RecordsContext.Provider>
+          <NewActivityScreen />
+        </RecordsContext.Provider>
       </ActivitiesContext.Provider>
     );
 
@@ -40,7 +44,9 @@ describe('When an activity is clicked', () => {
   it('should dissmiss the dialog', async () => {
     const { getByTestId } = render(
       <ActivitiesContext.Provider value={testActivityContextData}>
-        <NewActivityScreen />
+        <RecordsContext.Provider>
+          <NewActivityScreen />
+        </RecordsContext.Provider>
       </ActivitiesContext.Provider>
     );
 
@@ -62,7 +68,9 @@ describe('When dialog is opened', () => {
   it('should change qty input value', async () => {
     const { getByTestId } = render(
       <ActivitiesContext.Provider value={testActivityContextData}>
-        <NewActivityScreen />
+        <RecordsContext.Provider>
+          <NewActivityScreen />
+        </RecordsContext.Provider>
       </ActivitiesContext.Provider>
     );
 
@@ -78,7 +86,9 @@ describe('When dialog is opened', () => {
     const { getByTestId, findByText } = render(
       <AuthContext.Provider value={testAuthContextData}>
         <ActivitiesContext.Provider value={testActivityContextData}>
-          <NewActivityScreen />
+          <RecordsContext.Provider>
+            <NewActivityScreen />
+          </RecordsContext.Provider>
         </ActivitiesContext.Provider>
       </AuthContext.Provider>
     );
@@ -98,7 +108,9 @@ describe('When dialog is opened', () => {
     const { getByTestId } = render(
       <AuthContext.Provider value={testAuthContextData}>
         <ActivitiesContext.Provider value={testActivityContextData}>
-          <NewActivityScreen />
+          <RecordsContext.Provider>
+            <NewActivityScreen />
+          </RecordsContext.Provider>
         </ActivitiesContext.Provider>
       </AuthContext.Provider>
     );

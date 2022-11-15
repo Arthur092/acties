@@ -3,7 +3,7 @@ import { ScrollView, View, ViewStyle } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { IconButton, Snackbar, Text } from 'react-native-paper';
 import { ActivityType, RecordType } from "../constants/Types";
-import { useActivities } from '../hooks/useActivities';
+import { useRecords } from '../hooks/useRecords';
 import { Timestamp } from '@firebase/firestore-types'
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
@@ -18,7 +18,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'ActivityReport'> & { ac
 const ActivityReport = ({ route } : Props) => {
   const [records, setRecords] = useState<Array<RecordType>>([]);
   const [monthlyViewDate, setMonthlyViewDate] = useState<Date | null>(null);
-  const { records: fetchedRecords } = useActivities();
+  const { records: fetchedRecords } = useRecords();
   const [monthlyRecords, setMonthlyRecords] = useState<Array<RecordType>>([]);
   const { activity } = route.params;
   const [isDialogVisile, setIsDialogVisile] = useState(false);
@@ -46,21 +46,25 @@ const ActivityReport = ({ route } : Props) => {
       return (b.date as Timestamp).toMillis() - (a.date as Timestamp).toMillis();
     });
     setRecords(initialRecords);
+    if(initialRecords.length > 10){
+      onMontlyView(initialRecords);
+    }
   }, [fetchedRecords]);
 
-  const onMontlyView = () => {
+  const onMontlyView = (recordsParam: RecordType[] | undefined =  undefined) => {
+    const currentRecords = recordsParam ?? records;
     const currentDate = moment().toDate();
     setMonthlyViewDate(currentDate);
     let currentMonthRecords = [];
     if(activity.monthDay){
       const currentMonthDay = moment(currentDate).endOf('day').date(activity.monthDay!);
       const nextMonthDay = moment(currentDate).endOf('day').add(1, 'months').date(activity.monthDay!)
-      currentMonthRecords = records.filter(record => {
+      currentMonthRecords = currentRecords.filter(record => {
         const recordDate = moment((record.date as Timestamp).toDate());
         return recordDate > currentMonthDay && recordDate <= nextMonthDay
       })
     } else {
-      currentMonthRecords = records.filter(record => moment((record.date as Timestamp).toDate()).month() === moment(currentDate).month())
+      currentMonthRecords = currentRecords.filter(record => moment((record.date as Timestamp).toDate()).month() === moment(currentDate).month())
     }
     setMonthlyRecords(currentMonthRecords);
   }
@@ -129,7 +133,7 @@ const ActivityReport = ({ route } : Props) => {
       }
       />
     </ScrollView>
-    <Button mode='outlined' style={styles.floatButton(useThemeColor)} onPress={monthlyViewDate ? onRegularView : onMontlyView}>
+    <Button mode='outlined' style={styles.floatButton(useThemeColor)} onPress={monthlyViewDate ? onRegularView : () => onMontlyView()}>
       {monthlyViewDate ? "Regular View" : "Mothly View"}
     </Button>
     <RecordDialog
