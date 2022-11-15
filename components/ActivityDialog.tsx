@@ -50,16 +50,14 @@ export const ActivityDialog = ({ visible, showDialog, setSnackBar, activity }: P
   const [currency, setCurrency] = useState('');
 
   useEffect(() => {
-    if(activity){
-      setName(activity.name);
-      setMonthDay(activity.monthDay ? String(activity.monthDay) : '');
-      setIconName(activity.iconName);
-      setIconColor(activity.iconColor);
-      setIsQuantity(activity.isQuantity);
-      setIsNote(activity.isNote ?? false);
-      setCurrency(activity.currency ?? '');
-    }
+    fillModal();
   }, [activity])
+
+  useEffect(() => {
+    if (visible){
+      fillModal();
+    }
+  }, [visible])
 
   const colorList = [
     {
@@ -72,7 +70,7 @@ export const ActivityDialog = ({ visible, showDialog, setSnackBar, activity }: P
     },
     {
       label: "Cyan",
-      value: "#4DB6AC",
+      value: "#00BCD4",
     },
     {
       label: "Lime",
@@ -98,19 +96,10 @@ export const ActivityDialog = ({ visible, showDialog, setSnackBar, activity }: P
     } else if (!isQuantity && !isNote){
       setErrors({...errors, ['boolean']: 'Number or note should be enabled'})
     }
-  },[isNote, isQuantity])
-
-  useEffect(() => {
-    if(iconColor){
-      setErrors({...errors, ['color']: ''})
-    } else {
-      setErrors({...errors, ['color']: 'You must select a color'})
+    if(!visible){
+      setErrors({});
     }
-  }, [iconColor])
-
-  useEffect(() => {
-    setErrors({});
-  }, [])
+  },[isNote, isQuantity])
 
   const dismissDialog = () => {
     setName("");
@@ -120,8 +109,20 @@ export const ActivityDialog = ({ visible, showDialog, setSnackBar, activity }: P
     setCurrency("");
     setIsQuantity(false);
     setIsNote(false);
-    setErrors({});
     showDialog(false);
+    setErrors({});
+  }
+
+  const fillModal = () => {
+    if(activity){
+      setName(activity.name);
+      setMonthDay(activity.monthDay ? String(activity.monthDay) : '');
+      setIconName(activity.iconName);
+      setIconColor(activity.iconColor);
+      setIsQuantity(activity.isQuantity);
+      setIsNote(activity.isNote ?? false);
+      setCurrency(activity.currency ?? '');
+    }
   }
 
   const onChangeName = (name: string) => {
@@ -259,7 +260,7 @@ export const ActivityDialog = ({ visible, showDialog, setSnackBar, activity }: P
                   showDropDown={() => setShowDropDown(true)}
                   onDismiss={() => setShowDropDown(false)}
                   value={iconColor}
-                  setValue={(color) => setIconColor(color)}
+                  setValue={(color) => {setIconColor(color); setErrors({...errors, ['color']: ''})}}
                   list={colorList}
                 />
               </View>
