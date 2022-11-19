@@ -7,15 +7,15 @@ import { useAuth } from "../hooks/useAuth";
 
 interface Props {
   options: Record<string, string>,
-  visible: boolean,
-  closeMenu: () => void,
-  openMenu: () => void,
   route: Record<string, string>,
   navigation: any,
 }
-export const Header = ({ options, visible, closeMenu, openMenu, route, navigation }: Props) => {
+export const Header = ({ options, route, navigation }: Props) => {
     const title = getHeaderTitle(options, route.name);
     const { signout, user } = useAuth();
+    const [visible, setVisible] = React.useState(false);
+    const openMenu = () => setVisible(true);
+    const closeMenu = () => setVisible(false);
 
     const signOut = async () => {
       try {
@@ -32,8 +32,7 @@ export const Header = ({ options, visible, closeMenu, openMenu, route, navigatio
 
     return (
       <Appbar.Header>
-        <View style={{zIndex: 100, width: '100%'}}>
-          <Provider>
+        <View style={{zIndex: 100 }}>
             <Menu
               visible={visible}
               onDismiss={closeMenu}
@@ -46,7 +45,6 @@ export const Header = ({ options, visible, closeMenu, openMenu, route, navigatio
               <Menu.Item icon="account" title={user?.email} />
               <Menu.Item icon="logout" onPress={signOut} title="Sign out" />
             </Menu>
-          </Provider>
         </View>
         <Appbar.Content title={title} />
         <Pressable

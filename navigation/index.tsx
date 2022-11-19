@@ -72,9 +72,6 @@ function BottomTabNavigator() {
   const colorScheme = useColorScheme();
   const { getActivityTypes, activityTypes } = useActivities();
   const { getRecords, records } = useRecords();
-  const [visible, setVisible] = React.useState(false);
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
 
   useEffect(() => {
     getActivityTypes();
@@ -89,9 +86,6 @@ function BottomTabNavigator() {
           <Header
             options={options}
             route={route}
-            visible={visible}
-            closeMenu={closeMenu}
-            openMenu={openMenu}
             navigation={navigation}
         />
         )
