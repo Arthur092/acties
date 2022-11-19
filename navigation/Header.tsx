@@ -32,7 +32,7 @@ export const Header = ({ options, visible, closeMenu, openMenu, route, navigatio
 
     return (
       <Appbar.Header>
-        <View>
+        <View style={{zIndex: 100, width: '100%'}}>
           <Provider>
             <Menu
               visible={visible}
@@ -40,7 +40,6 @@ export const Header = ({ options, visible, closeMenu, openMenu, route, navigatio
               anchor={
                 <Appbar.Action icon="menu" color="white" onPress={openMenu} />
               }
-              style={{zIndex: 100}}
               >
               <Menu.Item title='Menu' />
               <Menu.Item icon="check-circle" title="Activities" onPress={goToActivities}/>

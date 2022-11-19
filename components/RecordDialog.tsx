@@ -35,11 +35,12 @@ export const RecordDialog = ({ visible, showDialog, currentActivity, setSnackBar
   // const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    setNote(recordData?.note ?? "");
-    setNumber(recordData?.quantity?.toString()  ?? "");
-    const currentDate = recordData?.date ? recordData.date as Timestamp : null;
-    setDate(currentDate ? new Date(currentDate.seconds * 1000) : new Date);
-  },[recordData])
+    fillModal();
+  }, [recordData])
+
+  useEffect(() => {
+    fillModal();
+  }, [visible])
 
   const dismissDialog = () => {
     setNumber("");
@@ -73,6 +74,15 @@ export const RecordDialog = ({ visible, showDialog, currentActivity, setSnackBar
     },
     [setOpenDate, setDate]
   );
+
+  const fillModal = () => {
+    if (recordData){
+      setNote(recordData?.note ?? "");
+      setNumber(recordData?.quantity?.toString()  ?? "");
+      const currentDate = recordData?.date ? recordData.date as Timestamp : null;
+      setDate(currentDate ? new Date(currentDate.seconds * 1000) : new Date);
+    }
+  }
 
   const onSubmit = async () => {
     if(currentActivity?.isQuantity && currentActivity?.isNote){
