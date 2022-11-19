@@ -6,8 +6,10 @@ export function emailValidator(email: string) {
   }
 
 export function numberValidator(number: string) {
+  if(!number){
+    return ''
+  }
   const re = /^[1-9]\d*(\.\d+)?$/
-  if (!number) return "Number can't be empty."
   if (!re.test(number)) return 'Ooops! We need a valid number.'
   return ''
 }
@@ -27,7 +29,7 @@ export function passwordValidator(password: string) {
   return '';
 }
 
-export function inputValidator(value: string) {
+export function emptyValidator(value: string) {
   if (!value) return "Input can't be empty.";
   return '';
 }

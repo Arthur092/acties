@@ -13,12 +13,15 @@ type Props = {
 }
 
 const getDetails = (element: RecordType) => {
-  if (element.quantity) {
+  if (element.note) {
+    const noteArray = element.note.split(' ');
+    return noteArray[0];
+  }else if (element.quantity){
     const currency = element.activity.currency ? element.activity.currency + ' ' : 'L. ';
     return currency + formatDecimal(element.quantity);
   }
 
-  return element.note ?? '';
+  return '';
 }
 
 export const RecordsTable = ({ records, showTotal, onPress }: Props) => {
@@ -42,7 +45,7 @@ export const RecordsTable = ({ records, showTotal, onPress }: Props) => {
               key={index}
               onPress={onPress ? () => onPress(element) : () => {}}>
               <DataTable.Cell style={styles.icon}><List.Icon icon={element.activity.iconName} color={element.activity.iconColor}/></DataTable.Cell>
-              <DataTable.Cell style={{justifyContent: 'flex-end'}}>{element.activity.name}</DataTable.Cell>
+              <DataTable.Cell style={{justifyContent: 'flex-start'}}>{element.activity.name}</DataTable.Cell>
               <DataTable.Cell style={{justifyContent: 'center'}}>{rowDetails}</DataTable.Cell>
               <DataTable.Cell style={{justifyContent: 'center'}}>{moment((element.date as Timestamp).toDate()).format('l')}</DataTable.Cell>
             </DataTable.Row>
@@ -50,10 +53,7 @@ export const RecordsTable = ({ records, showTotal, onPress }: Props) => {
         {
           showTotal && total > 0 && (
             <DataTable.Row style={{ backgroundColor: background }} key={'total'}>
-              <DataTable.Cell style={{justifyContent: 'flex-start'}}>Total</DataTable.Cell>
-              <DataTable.Cell style={{justifyContent: 'flex-start'}}>{records[0].activity.currency ?? 'L.'} {formatDecimal(total)}</DataTable.Cell>
-              <DataTable.Cell style={{justifyContent: 'flex-start'}}></DataTable.Cell>
-              <DataTable.Cell style={{justifyContent: 'center'}}></DataTable.Cell>
+              <DataTable.Cell style={{justifyContent: 'flex-start'}}>Total:       {records[0].activity.currency && records[0].activity.currency != "" ? records[0].activity.currency : 'L.'} {formatDecimal(total)}</DataTable.Cell>
             </DataTable.Row>
           )
         }

@@ -1,9 +1,9 @@
 
 import * as React from 'react';
-import { useCallback, useState, useEffect } from 'react';
-import { View, StyleSheet  } from 'react-native';
+import { useState, useEffect, useCallback } from 'react';
+import { View, StyleSheet } from 'react-native';
 import { Button, Dialog, Portal, TextInput } from 'react-native-paper';
-import { numberValidator } from '../helpers/validators';
+import { emptyValidator, numberValidator } from '../helpers/validators';
 import { theme } from '../core/theme';
 import { Text } from 'react-native'
 import { createRecord, deleteRecord, updateRecord } from '../firebase';
@@ -30,8 +30,8 @@ export const RecordDialog = ({ visible, showDialog, currentActivity, setSnackBar
   const [number, setNumber] = useState("");
   const [note, setNote] = useState("");
   const [date, setDate] = useState(new Date);
-  const [numberError, setNumberError] = useState<string | undefined>(undefined);
   const [openDate, setOpenDate] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   // const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -43,16 +43,23 @@ export const RecordDialog = ({ visible, showDialog, currentActivity, setSnackBar
 
   const dismissDialog = () => {
     setNumber("");
+    setNote("");
+    setErrors({});
     setDate(new Date);
     setOpenDate(false);
     showDialog(false);
   }
 
-  const onChanged = (number: string)=>  {
+  const onChangedNumber = (number: string)=>  {
     const numberError = numberValidator(number);
-    setNumberError(numberError)
+    setErrors({...errors, ['number']: numberError});
     const newNumber = number.replace(/[^0-9.]/g, '')
     setNumber(newNumber);
+  }
+
+  const onChangedNote = (note: string)=>  {
+    setErrors({...errors, ['note']: ''});
+    setNote(note);
   }
 
   const onDismissSingle = useCallback(() => {
@@ -68,10 +75,33 @@ export const RecordDialog = ({ visible, showDialog, currentActivity, setSnackBar
   );
 
   const onSubmit = async () => {
-    if(currentActivity?.isQuantity){
+    if(currentActivity?.isQuantity && currentActivity?.isNote){
       const numberError = numberValidator(number);
       if(numberError){
-        setNumberError(numberError)
+        setErrors({...errors, ['number']: numberError});
+        return
+      }
+      const emptyNumber = emptyValidator(number);
+      const emptyNote = emptyValidator(note);
+      if(emptyNumber && emptyNote){
+        setErrors({...errors, ['number']: emptyNumber, ['note']: emptyNote});
+        return
+      }
+    } else if(currentActivity?.isQuantity && !currentActivity?.isNote){
+      const numberError = numberValidator(number);
+      if(numberError){
+        setErrors({...errors, ['number']: numberError});
+        return
+      }
+      const emptyNumber = emptyValidator(number);
+      if(emptyNumber){
+        setErrors({...errors, ['number']: emptyNumber});
+        return
+      }
+    } else if(currentActivity?.isNote && !currentActivity?.isQuantity){
+      const emptyNote = emptyValidator(note);
+      if(emptyNote){
+        setErrors({...errors, ['note']: emptyNote});
         return
       }
     }
@@ -82,7 +112,7 @@ export const RecordDialog = ({ visible, showDialog, currentActivity, setSnackBar
             id: recordData.id,
             activity: currentActivity,
             date,
-            quantity: parseFloat(number),
+            quantity: number ? parseFloat(number) : null,
             userId: user!.uid,
             note,
             activityId: currentActivity.id!
@@ -92,7 +122,7 @@ export const RecordDialog = ({ visible, showDialog, currentActivity, setSnackBar
           await createRecord({
             activity: currentActivity,
             date,
-            quantity: parseFloat(number),
+            quantity: number ? parseFloat(number) : null,
             userId: user!.uid,
             note,
             activityId: currentActivity.id!
@@ -130,11 +160,11 @@ export const RecordDialog = ({ visible, showDialog, currentActivity, setSnackBar
                   testID='input-qty'
                   label={currentActivity.currency ?? "L."}
                   value={number}
-                  onChangeText={onChanged}
+                  onChangeText={onChangedNumber}
                   placeholder='eg. 500'
                   mode='outlined'
                   autoComplete={false}
-                  error={numberError ? true : false}
+                  error={errors['number'] ? true : false}
                 />
               )
             }
@@ -144,16 +174,18 @@ export const RecordDialog = ({ visible, showDialog, currentActivity, setSnackBar
                   testID='input-note'
                   label="Note"
                   value={note}
-                  multiline
-                  numberOfLines={4}
-                  onChangeText={setNote}
+                  onChangeText={onChangedNote}
                   placeholder='eg. details'
                   mode='outlined'
+                  numberOfLines={4}
+                  keyboardType="default"
+                  style={{minHeight: 100}}
                   autoComplete={false}
+                  error={errors['note'] ? true : false}
                 />
               )
             }
-            {numberError ? <Text testID='input-qty-error' style={styles.error}>{numberError}</Text> : null}
+            {Object.entries(errors).filter(([key, value]) => key !== 'name' && key !== 'monthDay').map(([key, value])=> <Text key={key} testID='input-global-records-error' style={styles.error}>{value}</Text>)}
             </View>
             <TextInput
               label="Date"

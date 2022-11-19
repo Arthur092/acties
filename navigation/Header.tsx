@@ -1,7 +1,7 @@
 import React from "react";
-import { Appbar, Menu } from "react-native-paper";
+import { Appbar, Menu, Provider } from "react-native-paper";
 import { getHeaderTitle } from '@react-navigation/elements';
-import { Pressable } from "react-native";
+import { Pressable, View } from "react-native";
 import { TabBarIcon } from ".";
 import { useAuth } from "../hooks/useAuth";
 
@@ -31,18 +31,24 @@ export const Header = ({ options, visible, closeMenu, openMenu, route, navigatio
     }
 
     return (
-    <Appbar.Header>
-        <Menu
-          visible={visible}
-          onDismiss={closeMenu}
-          anchor={
-            <Appbar.Action icon="menu" color="white" onPress={openMenu} />
-          }>
-          <Menu.Item title='Menu' />
-          <Menu.Item icon="check-circle" title="Activities" onPress={goToActivities}/>
-          <Menu.Item icon="account" title={user?.email} />
-          <Menu.Item icon="logout" onPress={signOut} title="Sign out" />
-        </Menu>
+      <Appbar.Header>
+        <View>
+          <Provider>
+            <Menu
+              visible={visible}
+              onDismiss={closeMenu}
+              anchor={
+                <Appbar.Action icon="menu" color="white" onPress={openMenu} />
+              }
+              style={{zIndex: 100}}
+              >
+              <Menu.Item title='Menu' />
+              <Menu.Item icon="check-circle" title="Activities" onPress={goToActivities}/>
+              <Menu.Item icon="account" title={user?.email} />
+              <Menu.Item icon="logout" onPress={signOut} title="Sign out" />
+            </Menu>
+          </Provider>
+        </View>
         <Appbar.Content title={title} />
         <Pressable
           onPress={signOut}

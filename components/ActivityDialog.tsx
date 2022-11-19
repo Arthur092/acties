@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Button, Dialog, List, Portal, TextInput, useTheme } from 'react-native-paper';
-import { inputValidator, monthDayValidator } from '../helpers/validators';
+import { emptyValidator, monthDayValidator } from '../helpers/validators';
 import { theme } from '../core/theme';
 import { Text } from 'react-native-paper'
 import { createActivityType, deleteActivity, updateActivityType } from '../firebase';
@@ -126,7 +126,7 @@ export const ActivityDialog = ({ visible, showDialog, setSnackBar, activity }: P
   }
 
   const onChangeName = (name: string) => {
-    const nameError = inputValidator(name);
+    const nameError = emptyValidator(name);
     setErrors({...errors, ['name']: nameError})
     setName(name);
   }
