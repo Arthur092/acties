@@ -176,7 +176,7 @@ export const ActivityDialog = ({ visible, showDialog, setSnackBar, activity }: P
       }
 
       if(activity){
-        await updateActivityType({...newActivitytype, id: activity.id})
+        await updateActivityType({...newActivitytype, addedAt: activity.addedAt ?? undefined, id: activity.id})
         setSnackBar({visible: true, message: 'Activity updated successfuly!', error: false})
       } else {
         await createActivityType({...newActivitytype, addedAt: new Date()})
